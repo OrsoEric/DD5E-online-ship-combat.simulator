@@ -189,12 +189,22 @@
         <label><b>Weapon Simulation</b></label>
         <label>A ship has many weapons. Select any number of weapons to fire at the enemy. Cone of fire will tell you which weapon if any has sight on the enemy ship.</label>
         <div class="row">
-            <p>
-                <div class="tooltip">Distance Ship to Ship <span  class="tooltiptext">Distance between the two ship centers. Affects max range and accuracy of weapons</span></div>
-                <input id="output_distance_ship_ship" step="any" type="text" size="10" value="0.000" disabled="disabled"/>
-                <input id="output_distance_ship_ship_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
-            </p>
             <div class="column">
+                <p>
+                    <div class="tooltip">Distance Ship to Ship <span  class="tooltiptext">Distance between the two ship centers. Affects max range and accuracy of weapons</span></div>
+                    <input id="output_distance_ship_ship" step="any" type="text" size="10" value="0.000" disabled="disabled"/>
+                    <input id="output_distance_ship_ship_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
+                </p>
+
+                <p>
+                    <div class="tooltip">Target<span  class="tooltiptext">Where the weapon is aiming. HULL is easy to hit. DECK is harder to hit and can cause crew damage. SAIL are hardest to hit, and cause sail and mast damage. Arcing weapon have bonus attack on DECK.</span></div>
+                    <select id="choice_target" value="target-hull">
+                        <option value="target-hull">Hull</option>
+                        <option value="target-deck">Deck</option>
+                        <option value="target-sail">Sail</option>
+                    </select>
+                </p>
+
                 <p>
                     <b><div class="tooltip">Left Ship<span  class="tooltiptext">In this column are grouped all parameters relative to this ship</span></div></b>
                 </p>
@@ -225,6 +235,21 @@
                 <p><input type="button" id="btn_left_weapon_fire" value="Left Ship Fire Weapon"></p>
             </div>
             <div class="column">
+                <p>
+                    <div class="tooltip">Gunner INT+PROF Bonus<span  class="tooltiptext">Weapon accuracy scales with INT of Gunner. If Gunner is proficient with the weapon type, the PROF is added. If Gunner has expertise in the weapon type, double PROF is added.</span></div>
+                    <input id="input_crew_gunner_bonus" step="any" type="number" size="10" value="-1"/>
+                </p>
+
+                <p>
+                    <div class="tooltip">Attack Roll<span  class="tooltiptext">Selecting this checkbox gives advantage</span></div>
+                    <select id="choice_gunner_attack_roll" value="throw-regular">
+                        <option value="throw-regular">Regular</option>
+                        <option value="throw-disadvantage">Disadvantage</option>
+                        <option value="throw-advantage">Advantage</option>
+                    </select>
+                </p>
+
+
                 <p>
                     <b><div class="tooltip">Right Ship<span  class="tooltiptext">In this column are grouped all parameters relative to this ship</span></div></b>
                 </p>
@@ -595,6 +620,61 @@
                 return Math.floor(Math.random() * in_num_die_faces) + 1;
             }
 
+            //Roll die
+            //throw-regular: 1 roll
+            //throw-disadvantage: 2 roll, take lowest
+            //throw-advantage: 2 roll, take highest
+            function roll_die_advantage( in_num_die_faces, is_advantage )
+            {
+                let n_roll = 0;
+                switch(is_advantage)
+                {
+                    
+                    case "throw-regular":
+                    {
+                        n_roll = roll_die( in_num_die_faces );
+                        new_event("Roll: ", n_roll);
+                        break;
+                    }
+                    case "throw-disadvantage":
+                    {
+                        let n_roll_1 = roll_die( in_num_die_faces );
+                        let n_roll_2 = roll_die( in_num_die_faces );
+                        if (n_roll_1>n_roll_2)
+                        {
+                            n_roll = n_roll_2;
+                        }
+                        else
+                        {
+                            n_roll = n_roll_1;
+                        }
+                        new_event("Roll: ", n_roll, " D("  , n_roll_1, " | ", n_roll_2, ")");
+                        break;
+                    }
+                    case "throw-advantage":
+                    {
+                        let n_roll_1 = roll_die( in_num_die_faces );
+                        let n_roll_2 = roll_die( in_num_die_faces );
+                        if (n_roll_1>n_roll_2)
+                        {
+                            n_roll = n_roll_1;
+                        }
+                        else
+                        {
+                            n_roll = n_roll_2;
+                        }
+                        new_event("Roll: ", n_roll, " A("  , n_roll_1, " | ", n_roll_2, ")");
+                        break;
+                    }
+                    default:
+                    {
+                        console.log("ERR: bad attack roll advantage/disadvantage: ", is_advantage);
+                        return;
+                    }
+                }
+                return n_roll;
+            }
+
             function parseEng( num )
             {
                 //console.log( "parseEng", num );
@@ -812,6 +892,21 @@
                 return;
             }
 
+            //Get all the attack modifiers that apply
+            function get_attack_modifiers()
+            {
+                st_attack_modifiers = {};
+                //Target of the attack
+                st_attack_modifiers.s_target = my_form.choice_target.value;
+                //Bonus of the gunner that apply to the attack
+                st_attack_modifiers.n_attack_bonus = my_form.input_crew_gunner_bonus.value;
+                //Roll can be regular, advantage or disadvantage
+                st_attack_modifiers.s_advantage = my_form.choice_gunner_attack_roll.value;
+
+                console.log("get_attack_modifiers: ", st_attack_modifiers);
+                return st_attack_modifiers;
+            }
+
             //Update the text labels that tell the user what the distance unit is
             function update_distance_unit( is_distance_unit )
             {
@@ -975,8 +1070,11 @@
             //
             function simulate_weapon_attack( ist_ship_attacking, ist_ship_defending, ist_weapon, ist_bonus)
             {
-                n_roll = roll_die( 20 );
-                new_event("Roll: ", n_roll)
+                let n_roll = 0;
+                //Fetch the attack modifiers that apply
+                st_attack_modifiers = get_attack_modifiers();
+                n_roll = roll_die_advantage( 20, st_attack_modifiers.s_advantage );
+
                 return;
             }
 
@@ -1113,6 +1211,7 @@
                     }
 
                     console.log("Left ship: ", gst_left_ship.s_ship_name, "FIRE on Right Ship: ", gst_right_ship.s_ship_name, " with Left Weapon: ", gst_left_weapon.s_weapon_name )
+
                     simulate_weapon_attack(0,0,0)
                     return;
                 }
