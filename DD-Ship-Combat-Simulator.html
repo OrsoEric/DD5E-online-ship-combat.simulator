@@ -538,31 +538,32 @@
             gca_weapons =
             [
                 //Name of the weapon
-                ["s_weapon_name",           "",         "cannon-40mm",],
+                ["s_weapon_name",               "",         "cannon-40mm",],
                 //Weight of the weapon and ammunition in Kg
-                ["n_weight_weapon",         0,          200,],
-                ["n_weight_ammunition",     0,          2.0,],
+                ["n_weight_weapon",             0,          200,],
+                ["n_weight_ammunition",         0,          2.0,],
                 //Gold Cost of weapon and ammunition
-                ["n_gold_weapon",           0,          100,],
-                ["n_gold_ammunition",       0,          100,],
+                ["n_gold_weapon",               0,          100,],
+                ["n_gold_ammunition",           0,          100,],
                 //Angle that weapon can be rotated left/right in degrees
-                ["n_angle_aim_horizontal",  0,          20,],
+                ["n_angle_aim_horizontal",      0,          20,],
                     //D&D Stats of the weapon
                 //Minimum range for firing the weapon in meters
-                ["n_range_min",             0,          5,],
-                //BaseAttack of the weapon at minimum range
-                ["n_dd_attack",             0,          10,     ],
+                ["n_dd_range_min",              0,          5,],
                 //Penality to attck roll due to range in meters
-                ["n_dd_attack_decay_range", 0,          -0.3,     ],
+                ["n_dd_attack_decay_range_m",   0,          -0.3,     ],
+                ["n_dd_attack_hull_penalty",    0,          -0,     ],
+                ["n_dd_attack_deck_penalty",    0,          -4,     ],
+                ["n_dd_attack_sail_penalty",    0,          -2,     ],
                 //Attack type
-                ["n_dd_damage_type",        "",         "blunt",],
+                ["n_dd_damage_type",            "",         "blunt",],
                 //Die roll of the weapon damage if hit
-                ["n_dd_damage_offset",      0,          1,],
-                ["n_dd_damage_die_size",    0,          10,],
-                ["n_dd_damage_roll_dies",   0,          3,],
+                ["n_dd_damage_offset",          0,          1,],
+                ["n_dd_damage_die_size",        0,          10,],
+                ["n_dd_damage_roll_dies",       0,          3,],
                 //Area of the weapon in meter
-                ["n_dd_damage_aoe",         0,          0,],
-                ["x_valid",                 false,      true, ],
+                ["n_dd_damage_aoe",             0,          0,],
+                ["x_valid",                     false,      true, ],
             ];
             //Given a weapon name, load the weapon with all its stats from the weapon matrix
             function load_weapon( is_weapon )
@@ -759,8 +760,7 @@
 
                 //STEP4: Decode SI Suffix
                 retStr = retStr + "yzafpnum KMGTPEZY".charAt(8+varCnt)
-                //console.log(retStr);
-
+                //console.log("parseEng: ",num, retStr);
                 return retStr
             }
 
@@ -828,6 +828,7 @@
                         n_value_converted = 0.0;
                     }
                 }
+                //console.log("convert: ", in_value, n_value_converted)
                 //Return the converted value
                 return n_value_converted;
             }
@@ -848,25 +849,25 @@
             {
                 //FETCH Left Ship Coordinate
                 let st_left_ship_coordinate = {};
-                st_left_ship_coordinate.n_ns_m = parseEng( convert_distance_unit( my_form.input_left_north_south.value, my_form.output_left_north_south_unit.value, 'meter' ) );
-                st_left_ship_coordinate.n_ew_m = parseEng( convert_distance_unit( my_form.input_left_east_west.value, my_form.output_left_east_west_unit.value, 'meter' ) );
+                st_left_ship_coordinate.n_ns_m = parseFloat( convert_distance_unit( my_form.input_left_north_south.value, my_form.output_left_north_south_unit.value, 'meter' ) );
+                st_left_ship_coordinate.n_ew_m = parseFloat( convert_distance_unit( my_form.input_left_east_west.value, my_form.output_left_east_west_unit.value, 'meter' ) );
                 //FETCH Right Ship Coordinate
                 let st_right_ship_coordinate = {};
-                st_right_ship_coordinate.n_ns_m = parseEng( convert_distance_unit( my_form.input_right_north_south.value, my_form.output_right_north_south_unit.value, 'meter' ) );
-                st_right_ship_coordinate.n_ew_m = parseEng( convert_distance_unit( my_form.input_right_east_west.value, my_form.output_right_east_west_unit.value, 'meter' ) );
+                st_right_ship_coordinate.n_ns_m = parseFloat( convert_distance_unit( my_form.input_right_north_south.value, my_form.output_right_north_south_unit.value, 'meter' ) );
+                st_right_ship_coordinate.n_ew_m = parseFloat( convert_distance_unit( my_form.input_right_east_west.value, my_form.output_right_east_west_unit.value, 'meter' ) );
                 //Compute square distance
                 let n_distance_m = compute_square_distance( st_left_ship_coordinate, st_right_ship_coordinate );                
                 console.log("Distance: ", st_left_ship_coordinate, st_right_ship_coordinate, n_distance_m );
 
                 //Updage global coordinate
-                gst_left_ship_navigation.n_coordinate_north_south_m = st_left_ship_coordinate.n_ns_m;
-                gst_left_ship_navigation.n_coordinate_east_west_m = st_left_ship_coordinate.n_ew_m;
-                gst_right_ship_navigation.n_coordinate_north_south_m = st_right_ship_coordinate.n_ns_m;
-                gst_right_ship_navigation.n_coordinate_east_west_m = st_right_ship_coordinate.n_ew_m;
+                gst_left_ship_navigation.n_coordinate_north_south_m = parseFloat(st_left_ship_coordinate.n_ns_m);
+                gst_left_ship_navigation.n_coordinate_east_west_m = parseFloat(st_left_ship_coordinate.n_ew_m);
+                gst_right_ship_navigation.n_coordinate_north_south_m = parseFloat(st_right_ship_coordinate.n_ns_m);
+                gst_right_ship_navigation.n_coordinate_east_west_m = parseFloat(st_right_ship_coordinate.n_ew_m);
                 //Update distance between ship, a core combat status var
-                gst_ship_combat.n_distance_ship_center_to_ship_center_m = n_distance_m;
+                gst_wind_sea.n_distance_ship_center_to_ship_center_m = n_distance_m;
 
-                console.log("Global Distance: ", gst_ship_combat, gst_left_ship_navigation, gst_right_ship_navigation );
+                console.log("Global Distance: ", gst_wind_sea, gst_left_ship_navigation, gst_right_ship_navigation );
                 return;
             }
 
@@ -874,13 +875,13 @@
             function update_hmi_coordinate( is_distance_unit )
             {
                 //Update coordinates for both ships
-                my_form.input_left_north_south.value = convert_distance_unit( gst_left_ship_navigation.n_coordinate_north_south_m, 'meter', is_distance_unit );
-                my_form.input_left_east_west.value = convert_distance_unit( gst_left_ship_navigation.n_coordinate_east_west_m, 'meter', is_distance_unit );
-                my_form.input_right_north_south.value = convert_distance_unit( gst_right_ship_navigation.n_coordinate_north_south_m, 'meter', is_distance_unit );
-                my_form.input_right_east_west.value = convert_distance_unit( gst_right_ship_navigation.n_coordinate_east_west_m, 'meter', is_distance_unit );
+                my_form.input_left_north_south.value = parseFloat( convert_distance_unit( gst_left_ship_navigation.n_coordinate_north_south_m, 'meter', is_distance_unit ) );
+                my_form.input_left_east_west.value = parseFloat( convert_distance_unit( gst_left_ship_navigation.n_coordinate_east_west_m, 'meter', is_distance_unit ) );
+                my_form.input_right_north_south.value = parseFloat( convert_distance_unit( gst_right_ship_navigation.n_coordinate_north_south_m, 'meter', is_distance_unit ));
+                my_form.input_right_east_west.value = parseFloat( convert_distance_unit( gst_right_ship_navigation.n_coordinate_east_west_m, 'meter', is_distance_unit ));
 
                 //Update the distance between ship
-                my_form.output_distance_ship_ship.value = parseEng( convert_distance_unit( gst_ship_combat.n_distance_ship_center_to_ship_center_m, 'meter', is_distance_unit ) );
+                my_form.output_distance_ship_ship.value = parseEng( convert_distance_unit( gst_wind_sea.n_distance_ship_center_to_ship_center_m, 'meter', is_distance_unit ) );
                 return;
             }
 
@@ -893,13 +894,13 @@
             }
 
             //Get all the attack modifiers that apply
-            function get_attack_modifiers()
+            function get_hmi_attack_modifiers()
             {
                 st_attack_modifiers = {};
                 //Target of the attack
                 st_attack_modifiers.s_target = my_form.choice_target.value;
                 //Bonus of the gunner that apply to the attack
-                st_attack_modifiers.n_attack_bonus = my_form.input_crew_gunner_bonus.value;
+                st_attack_modifiers.n_attack_bonus = parseInt(my_form.input_crew_gunner_bonus.value);
                 //Roll can be regular, advantage or disadvantage
                 st_attack_modifiers.s_advantage = my_form.choice_gunner_attack_roll.value;
 
@@ -964,7 +965,7 @@
             function update_output_left_ship( ist_ship, ist_ship_combat, is_new_distance_unit )
             {
                 //Save the ship stat on global var
-                gst_left_ship = ist_ship
+                gst_left_ship = {ist_ship}
                 //The stats are always meter, and converted on the fly
                 console.log("Left Ship: ", ist_ship);
                 //Ship dimensions
@@ -1021,7 +1022,7 @@
                 //The stats are always meter, and converted on the fly
                 console.log("Left Weapon: ", ist_weapon);
 
-                my_form.output_left_weapon_range_min.value = parseEng( convert_distance_unit( ist_weapon.n_range_min, 'meter', gs_distance_unit ) )
+                my_form.output_left_weapon_range_min.value = parseEng( convert_distance_unit( ist_weapon.n_dd_range_min, 'meter', gs_distance_unit ) )
                 
                 return;
             }
@@ -1033,7 +1034,7 @@
                 //The stats are always meter, and converted on the fly
                 console.log("Right Weapon: ", ist_weapon);
 
-                my_form.output_right_weapon_range_min.value = parseEng( convert_distance_unit( ist_weapon.n_range_min, 'meter', gs_distance_unit ) )
+                my_form.output_right_weapon_range_min.value = parseEng( convert_distance_unit( ist_weapon.n_dd_range_min, 'meter', gs_distance_unit ) )
                 
                 return;
             }
@@ -1041,40 +1042,68 @@
             //--------------------------------------------------------------------------------------
             //  SIMULATION FUNCTIONS
             //--------------------------------------------------------------------------------------
-            //  IDEA: Make a much simpler navigation
-            //  Move range depends on wind strength
-            //  Moving against the wind costs a lot more
             //  
 
-            //execute the wind and sail simulation to move both ships
-            function simulate_wind_sail()
+            function simulate_weapon_attack( ist_ship_attacking, ist_ship_defending, ist_weapon, ist_wind_sea )
             {
-                
-                return;
-            }
+                st_damage_report = {};
 
-            //Simulate the effect the wind has on the motion of the ship
-            //The ship achieves maximum speed when moderate wind is hitting the sail in perfect alignment
-            //To travel against the wind, a ship moves the bow 45° left or right of the wind, and angle the sails to curve the wind behind it, generating thrust. Do a zig zag.
-            //I can do fancier simulation, but I want it to be simple and intuitive, the crew has to move the rudder, angle the sail, extend/retract the sails
-            function simulate_move_ship( ist_ship, ist_ship_navigation, ist_wind_sea )
-            {
-                console.log("Ship: ", ist_ship )
-                console.log("Ship navigation: ", ist_ship_navigation )
-                console.log("Wind: ", ist_wind_sea )
-                //Compute the effectiviness of the sail
-
-                return;
-            }
-
-            //
-            function simulate_weapon_attack( ist_ship_attacking, ist_ship_defending, ist_weapon, ist_bonus)
-            {
-                let n_roll = 0;
                 //Fetch the attack modifiers that apply
-                st_attack_modifiers = get_attack_modifiers();
-                n_roll = roll_die_advantage( 20, st_attack_modifiers.s_advantage );
+                st_attack_modifiers = get_hmi_attack_modifiers();
+                //Roll the attack die
+                st_damage_report.n_raw_roll = roll_die_advantage( 20, st_attack_modifiers.s_advantage );
+                //is it a critical hit?
+                st_damage_report.x_crit = (st_damage_report.n_raw_roll == 20);
+                //Account for bonuses
+                st_damage_report.n_bonus_roll = st_attack_modifiers.n_attack_bonus;
+                //If beyond the minimum distance, apply range penality
+                let n_range_penality = 0;
+                if (ist_wind_sea.n_distance_ship_center_to_ship_center_m >= ist_weapon.n_dd_range_min)
+                {
+                    n_range_penality = Math.floor( (ist_wind_sea.n_distance_ship_center_to_ship_center_m -ist_weapon.n_dd_range_min) *ist_weapon.n_dd_attack_decay_range_m);
+                }
+                //The target 
+                switch(st_attack_modifiers.s_target)
+                {
+                    case "target-hull":
+                    {
+                        n_range_penality += ist_weapon.n_dd_attack_hull_penalty;
+                        break;
+                    }
+                    case "target-deck":
+                    {
+                        n_range_penality += ist_weapon.n_dd_attack_deck_penalty;
+                        break;
+                    }
+                    case "target-sail":
+                    {
+                        n_range_penality += ist_weapon.n_dd_attack_sail_penalty;
+                        break;
+                    }
+                    default:
+                    {
+                        console.log("ERR: invalid target: ", st_attack_modifiers.s_target);
+                    }
+                }
+                st_damage_report.n_penality_roll = n_range_penality;
+                //Compute final roll
+                st_damage_report.n_final_roll = st_damage_report.n_raw_roll +st_damage_report.n_bonus_roll +st_damage_report.n_penality_roll;
+                new_event("Roll: ", st_damage_report.n_final_roll , " | Bonuses: ", st_damage_report.n_bonus_roll , " | Penality: ", st_damage_report.n_penality_roll );
+                //MINIMUM RANGE: automatic miss
+                if ((ist_weapon.n_dd_range_min != 0) && (ist_wind_sea.n_distance_ship_center_to_ship_center_m < ist_weapon.n_dd_range_min))
+                {
+                    st_damage_report.x_hit = false;
+                    st_damage_report.x_crit = false;
+                }
+                else
+                {
+                    //Compute hit, critical hits are automatic hits
+                    st_damage_report.x_hit = (st_damage_report.n_final_roll > ist_ship_defending.n_dd_ac_armor_class) || st_damage_report.x_crit;
+                }                
+                new_event("Target AC: ", ist_ship_defending.n_dd_ac_armor_class, " | Hit: ", st_damage_report.x_hit, " | Crit: ", st_damage_report.x_crit );
 
+                //If it was an hit, now account for damage and 
+                
                 return;
             }
 
@@ -1212,7 +1241,7 @@
 
                     console.log("Left ship: ", gst_left_ship.s_ship_name, "FIRE on Right Ship: ", gst_right_ship.s_ship_name, " with Left Weapon: ", gst_left_weapon.s_weapon_name )
 
-                    simulate_weapon_attack(0,0,0)
+                    st_damage_report = simulate_weapon_attack( gst_left_ship, gst_right_ship, gst_left_weapon, gst_wind_sea );
                     return;
                 }
                 my_form.btn_right_weapon_fire.onclick = 

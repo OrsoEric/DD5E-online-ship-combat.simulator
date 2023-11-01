@@ -9,6 +9,31 @@
     <option value="left">Turn Left</option>    
 </select></p>
 
+//execute the wind and sail simulation to move both ships
+function simulate_wind_sail()
+{
+    
+    return;
+}
+
+//  IDEA: Make a much simpler navigation
+//  Move range depends on wind strength
+//  Moving against the wind costs a lot more
+
+//Simulate the effect the wind has on the motion of the ship
+//The ship achieves maximum speed when moderate wind is hitting the sail in perfect alignment
+//To travel against the wind, a ship moves the bow 45° left or right of the wind, and angle the sails to curve the wind behind it, generating thrust. Do a zig zag.
+//I can do fancier simulation, but I want it to be simple and intuitive, the crew has to move the rudder, angle the sail, extend/retract the sails
+function simulate_move_ship( ist_ship, ist_ship_navigation, ist_wind_sea )
+{
+    console.log("Ship: ", ist_ship )
+    console.log("Ship navigation: ", ist_ship_navigation )
+    console.log("Wind: ", ist_wind_sea )
+    //Compute the effectiviness of the sail
+
+    return;
+}
+
 //--------------------------------------------------------------------------------------
 //  CANVAS SEA MAP
 //--------------------------------------------------------------------------------------
@@ -17,5 +42,19 @@
 var canvas_sea_map = document.getElementById("canvas_sea_map");
 //canvas_context = my_form.canvas_sea_map.getContext("2d");
 console.log("canvas dimensions: ", canvas_sea_map)
+
+
+                ["n_dd_range_min",                 0,          5,],
+            
+                //Penality to attck roll due to range in meters
+                ["n_dd_attack_decay_range_m",   0,          -0.3,     ],
+                //Attack type
+                ["n_dd_damage_type",            "",         "blunt",],
+                //Die roll of the weapon damage if hit
+                ["n_dd_damage_offset",          0,          1,],
+                ["n_dd_damage_die_size",        0,          10,],
+                ["n_dd_damage_roll_dies",       0,          3,],
+                //Area of the weapon in meter
+                ["n_dd_damage_aoe",             0,          0,],
 
 
