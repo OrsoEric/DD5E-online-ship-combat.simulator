@@ -189,21 +189,32 @@
         <label><b>Weapon Simulation</b></label>
         <label>A ship has many weapons. Select any number of weapons to fire at the enemy. Cone of fire will tell you which weapon if any has sight on the enemy ship.</label>
         <div class="row">
+            <p>
+                <div class="tooltip">Distance Ship to Ship <span  class="tooltiptext">Distance between the two ship centers. Affects max range and accuracy of weapons</span></div>
+                <input id="output_distance_ship_ship" step="any" type="text" size="10" value="0.000" disabled="disabled"/>
+                <input id="output_distance_ship_ship_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
+            </p>
             <div class="column">
+                <p>
+                    <b><div class="tooltip">Left Ship<span  class="tooltiptext">In this column are grouped all parameters relative to this ship</span></div></b>
+                </p>
+
                 <p>
                     <div class="tooltip">Ship AC<span  class="tooltiptext">AC Armor Class models avoiding damage either by speed, cunning or bulk</span></div>
                     <input id="output_left_ship_ac" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
                 </p>
 
-                <p><div class="tooltip">Left Weapon<span  class="tooltiptext">Select the weapon you want to fire with. Simulator will tell you what side has the ship on sight.</span></div>
-                <select id="choice_left_weapon">
-                    <option value=""></option>
-                    <option value="cannon-40mm">Cannon 40[mm]</option>
-                    <option value="cannon-60mm">Cannon 60[mm]</option>
-                    <option value="cannon-75mm">Cannon 75[mm]</option>
-                    <option value="ballista-2kg">Ballista 2[Kg]</option>
-                    <option value="catapult-5kg">Catapult 5[Kg]</option>
-                </select></p>
+                <p>
+                    <div class="tooltip">Left Weapon<span  class="tooltiptext">Select the weapon you want to fire with. Simulator will tell you what side has the ship on sight.</span></div>
+                    <select id="choice_left_weapon">
+                        <option value=""></option>
+                        <option value="cannon-40mm">Cannon 40[mm]</option>
+                        <option value="cannon-60mm">Cannon 60[mm]</option>
+                        <option value="cannon-75mm">Cannon 75[mm]</option>
+                        <option value="ballista-2kg">Ballista 2[Kg]</option>
+                        <option value="catapult-5kg">Catapult 5[Kg]</option>
+                    </select>
+                </p>
 
                 <p>
                     <div class="tooltip">Weapon Range (min)<span  class="tooltiptext">Minimum distance at which the weapon can be fired</span></div>
@@ -215,19 +226,25 @@
             </div>
             <div class="column">
                 <p>
+                    <b><div class="tooltip">Right Ship<span  class="tooltiptext">In this column are grouped all parameters relative to this ship</span></div></b>
+                </p>
+
+                <p>
                     <div class="tooltip">Ship AC<span  class="tooltiptext">AC Armor Class models avoiding damage either by speed, cunning or bulk</span></div>
                     <input id="output_right_ship_ac" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
                 </p>
 
-                <p><div class="tooltip">Right Weapon<span  class="tooltiptext">Select the weapon you want to fire with</span></div>
-                <select id="choice_right_weapon">
-                    <option value=""></option>
-                    <option value="cannon-40mm">Cannon 40[mm]</option>
-                    <option value="cannon-60mm">Cannon 60[mm]</option>
-                    <option value="cannon-75mm">Cannon 75[mm]</option>
-                    <option value="ballista-2kg">Ballista 2[Kg]</option>
-                    <option value="catapult-5kg">Catapult 5[Kg]</option>
-                </select></p>
+                <p>
+                    <div class="tooltip">Right Weapon<span  class="tooltiptext">Select the weapon you want to fire with</span></div>
+                    <select id="choice_right_weapon">
+                        <option value=""></option>
+                        <option value="cannon-40mm">Cannon 40[mm]</option>
+                        <option value="cannon-60mm">Cannon 60[mm]</option>
+                        <option value="cannon-75mm">Cannon 75[mm]</option>
+                        <option value="ballista-2kg">Ballista 2[Kg]</option>
+                        <option value="catapult-5kg">Catapult 5[Kg]</option>
+                    </select>
+                </p>
 
                 <p>
                     <div class="tooltip">Weapon Range (min)<span  class="tooltiptext">Minimum distance at which the weapon can be fired</span></div>
@@ -340,7 +357,7 @@
                 </p>
                 <p>
                     <div class="tooltip">East/West<span  class="tooltiptext">Position of the ship in the East/West axis relative to center of the map.</span></div>
-                    <input id="input_left_east_west" step="any" type="number" size="10" value="0"/>
+                    <input id="input_left_east_west" step="any" type="number" size="10" value="-1"/>
                     <input id="output_left_east_west_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
                 </p>
             </div>
@@ -469,6 +486,8 @@
                 n_wind_direction_deg : 0.0,
                 //Realtive roughness of the sea, like waves. 0.0 means calm. 1.0 means rough. Affects weapon attack and ship navigation.
                 n_sea_roughness : 0.0,
+                //Distance between ship centers
+                n_distance_ship_center_to_ship_center_m : 0.0,
             };
             //Holds the navigation controls of the ship. This is the default structure, there is one for each ship.
             gcst_ship_navigation =
@@ -483,8 +502,8 @@
                 //Direction of the sail relative to the ship. 0.0 means forward. 1.0 means full extent to the right, -1.0 means full extent to the left.
                 n_sail_direction : 0.0,
             };
-            gst_left_ship_navigation = gcst_ship_navigation;
-            gst_right_ship_navigation = gcst_ship_navigation;
+            let gst_left_ship_navigation = { gcst_ship_navigation };
+            let gst_right_ship_navigation = { gcst_ship_navigation };
 
             //--------------------------------------------------------------------------------------
             //  WEAPONS
@@ -563,9 +582,8 @@
                 n_dd_cnt_holes_below_waterline : 0,
             };
             //Initialize combat structures
-            gst_left_ship_combat = gst_ship_combat;
-            gst_right_ship_combat = gst_ship_combat;
-
+            let gst_left_ship_combat = { gst_ship_combat };
+            let gst_right_ship_combat = { gst_ship_combat };
 
             //--------------------------------------------------------------------------------------
             //  UTILITY FUNCTIONS
@@ -734,38 +752,70 @@
                 return n_value_converted;
             }
 
+            //Compute square distance coordinates
+            function compute_square_distance( in_lhs, in_rhs )
+            {
+                let n_distance = Math.sqrt( (in_lhs.n_ns_m -in_rhs.n_ns_m)**2 + (in_lhs.n_ew_m -in_rhs.n_ew_m)**2);
+                //console.log("LHS: ", in_lhs, " | RHS: ", in_rhs, " | Distance: ", n_distance);
+                return n_distance;
+            }
+
             //--------------------------------------------------------------------------------------
             //  HMI FUNCTIONS
             //--------------------------------------------------------------------------------------
 
             function get_distance_left_ship_center_to_center_right_ship_center()
             {
-                //CHECK SHIPS
-                if (gst_left_ship.x_valid == false) 
-                {
-                    console.log("UNABLE: Select the Left Ship...")
-                    return;
-                }
-                if (gst_right_ship.x_valid == false) 
-                {
-                    console.log("UNABLE: Select the Right Ship...")
-                    return;
-                }
-                //FETCH distance
+                //FETCH Left Ship Coordinate
+                let st_left_ship_coordinate = {};
+                st_left_ship_coordinate.n_ns_m = parseEng( convert_distance_unit( my_form.input_left_north_south.value, my_form.output_left_north_south_unit.value, 'meter' ) );
+                st_left_ship_coordinate.n_ew_m = parseEng( convert_distance_unit( my_form.input_left_east_west.value, my_form.output_left_east_west_unit.value, 'meter' ) );
+                //FETCH Right Ship Coordinate
+                let st_right_ship_coordinate = {};
+                st_right_ship_coordinate.n_ns_m = parseEng( convert_distance_unit( my_form.input_right_north_south.value, my_form.output_right_north_south_unit.value, 'meter' ) );
+                st_right_ship_coordinate.n_ew_m = parseEng( convert_distance_unit( my_form.input_right_east_west.value, my_form.output_right_east_west_unit.value, 'meter' ) );
+                //Compute square distance
+                let n_distance_m = compute_square_distance( st_left_ship_coordinate, st_right_ship_coordinate );                
+                console.log("Distance: ", st_left_ship_coordinate, st_right_ship_coordinate, n_distance_m );
 
-                
-                gst_left_ship_navigation.n_coordinate_north_south_m = parseEng( convert_distance_unit( my_form.input_left_north_south.value, my_form.output_left_north_south_unit.value, 'meter' ) );
-                console.log("Distance:", my_form.input_left_north_south.value, my_form.output_left_north_south_unit.value , gst_left_ship_navigation.n_coordinate_north_south_m);
-                
-                
+                //Updage global coordinate
+                gst_left_ship_navigation.n_coordinate_north_south_m = st_left_ship_coordinate.n_ns_m;
+                gst_left_ship_navigation.n_coordinate_east_west_m = st_left_ship_coordinate.n_ew_m;
+                gst_right_ship_navigation.n_coordinate_north_south_m = st_right_ship_coordinate.n_ns_m;
+                gst_right_ship_navigation.n_coordinate_east_west_m = st_right_ship_coordinate.n_ew_m;
+                //Update distance between ship, a core combat status var
+                gst_ship_combat.n_distance_ship_center_to_ship_center_m = n_distance_m;
 
-
-                return
+                console.log("Global Distance: ", gst_ship_combat, gst_left_ship_navigation, gst_right_ship_navigation );
+                return;
             }
 
-            function update_distance_unit( s_distance_unit )
+            //Update the coordinate controls of the HMI
+            function update_hmi_coordinate( is_distance_unit )
             {
-                switch(s_distance_unit)
+                //Update coordinates for both ships
+                my_form.input_left_north_south.value = convert_distance_unit( gst_left_ship_navigation.n_coordinate_north_south_m, 'meter', is_distance_unit );
+                my_form.input_left_east_west.value = convert_distance_unit( gst_left_ship_navigation.n_coordinate_east_west_m, 'meter', is_distance_unit );
+                my_form.input_right_north_south.value = convert_distance_unit( gst_right_ship_navigation.n_coordinate_north_south_m, 'meter', is_distance_unit );
+                my_form.input_right_east_west.value = convert_distance_unit( gst_right_ship_navigation.n_coordinate_east_west_m, 'meter', is_distance_unit );
+
+                //Update the distance between ship
+                my_form.output_distance_ship_ship.value = parseEng( convert_distance_unit( gst_ship_combat.n_distance_ship_center_to_ship_center_m, 'meter', is_distance_unit ) );
+                return;
+            }
+
+            //Get the coordinate values of the controls and update all hmi controls including distance
+            function get_and_update_hmi_coordinate( is_distance_unit )
+            {
+                get_distance_left_ship_center_to_center_right_ship_center();
+                update_hmi_coordinate( is_distance_unit );
+                return;
+            }
+
+            //Update the text labels that tell the user what the distance unit is
+            function update_distance_unit( is_distance_unit )
+            {
+                switch(is_distance_unit)
                 {
                     case "[sq]":
                     case "square":
@@ -791,7 +841,7 @@
                         s_distance_unit_short = "ERR";
                     }
                 }
-
+                //Ship distance units
                 my_form.output_left_ship_length_unit.value = s_distance_unit_short
                 my_form.output_right_ship_length_unit.value = s_distance_unit_short
                 my_form.output_left_ship_width_unit.value = s_distance_unit_short
@@ -801,23 +851,32 @@
                 my_form.output_left_ship_depth_unit.value = s_distance_unit_short
                 my_form.output_right_ship_depth_unit.value = s_distance_unit_short
 
+                //Weapon distance units
                 my_form.output_left_weapon_range_min_unit.value = s_distance_unit_short
                 my_form.output_right_weapon_range_min_unit.value = s_distance_unit_short
+
+                //Coordinate units
+                my_form.output_left_north_south_unit.value = s_distance_unit_short;
+                my_form.output_left_east_west_unit.value = s_distance_unit_short;
+                my_form.output_right_north_south_unit.value = s_distance_unit_short;
+                my_form.output_right_east_west_unit.value = s_distance_unit_short;
+                my_form.output_distance_ship_ship_unit.value = s_distance_unit_short;
+                
                 return;
             }
 
             //Update the output fields of the left ship
-            function update_output_left_ship( ist_ship, ist_ship_combat )
+            function update_output_left_ship( ist_ship, ist_ship_combat, is_new_distance_unit )
             {
                 //Save the ship stat on global var
                 gst_left_ship = ist_ship
                 //The stats are always meter, and converted on the fly
                 console.log("Left Ship: ", ist_ship);
                 //Ship dimensions
-                my_form.output_left_ship_length.value = parseEng( convert_distance_unit( ist_ship.n_length_m, 'meter', gs_distance_unit ) );
-                my_form.output_left_ship_width.value = parseEng( convert_distance_unit( ist_ship.n_width_m, 'meter', gs_distance_unit ) );
-                my_form.output_left_ship_height.value = parseEng( convert_distance_unit( ist_ship.n_height_m, 'meter', gs_distance_unit ) );
-                my_form.output_left_ship_depth.value = parseEng( convert_distance_unit( ist_ship.n_depth_m, 'meter', gs_distance_unit ) );
+                my_form.output_left_ship_length.value = parseEng( convert_distance_unit( ist_ship.n_length_m, 'meter', is_new_distance_unit ) );
+                my_form.output_left_ship_width.value = parseEng( convert_distance_unit( ist_ship.n_width_m, 'meter', is_new_distance_unit ) );
+                my_form.output_left_ship_height.value = parseEng( convert_distance_unit( ist_ship.n_height_m, 'meter', is_new_distance_unit ) );
+                my_form.output_left_ship_depth.value = parseEng( convert_distance_unit( ist_ship.n_depth_m, 'meter', is_new_distance_unit ) );
 
                 //DD stats
                 my_form.output_left_ship_ac.value = parseEng( ist_ship.n_dd_ac_armor_class );
@@ -833,17 +892,17 @@
                 return;
             }
             //Update the output fields of the left ship
-            function update_output_right_ship( ist_ship, ist_ship_combat )
+            function update_output_right_ship( ist_ship, ist_ship_combat, is_new_distance_unit )
             {
                 //Save the ship stat on global var
                 gst_right_ship = ist_ship
                 //The stats are always meter, and converted on the fly
                 console.log("Right Ship: ", ist_ship)
                 //Ship dimensions
-                my_form.output_right_ship_length.value = parseEng( convert_distance_unit( ist_ship.n_length_m, 'meter', gs_distance_unit ) )
-                my_form.output_right_ship_width.value = parseEng( convert_distance_unit( ist_ship.n_width_m, 'meter', gs_distance_unit ) )
-                my_form.output_right_ship_height.value = parseEng( convert_distance_unit( ist_ship.n_height_m, 'meter', gs_distance_unit ) )
-                my_form.output_right_ship_depth.value = parseEng( convert_distance_unit( ist_ship.n_depth_m, 'meter', gs_distance_unit ) )
+                my_form.output_right_ship_length.value = parseEng( convert_distance_unit( ist_ship.n_length_m, 'meter', is_new_distance_unit ) )
+                my_form.output_right_ship_width.value = parseEng( convert_distance_unit( ist_ship.n_width_m, 'meter', is_new_distance_unit ) )
+                my_form.output_right_ship_height.value = parseEng( convert_distance_unit( ist_ship.n_height_m, 'meter', is_new_distance_unit ) )
+                my_form.output_right_ship_depth.value = parseEng( convert_distance_unit( ist_ship.n_depth_m, 'meter', is_new_distance_unit ) )
 
                 //DD stats
                 my_form.output_right_ship_max_hp.value = parseEng( ist_ship.n_dd_max_hp_health )
@@ -962,18 +1021,31 @@
                 my_form.choice_distance_unit.onchange=
                 function()
                 {
-                    console.log( "NOT IMPLEMENTED: choice_distance_unit", my_form.choice_distance_unit.data, my_form.choice_distance_unit.value );
+                    console.log( "Convert distance from unit: ", gs_distance_unit, " | to unit:", my_form.choice_distance_unit.value );
 
-                    gs_distance_unit = my_form.choice_distance_unit.value;
+                    let s_new_distance_unit = my_form.choice_distance_unit.value
+
+                    
                     //Update all output fields with the distance unit
-                    update_distance_unit( gs_distance_unit );
-                    //Apply all relevant conversions and update all output fields
-                    update_output_left_ship( gst_left_ship, gst_left_ship_combat );
-                    update_output_right_ship( gst_right_ship, gst_right_ship_combat );
-
+                    update_distance_unit( s_new_distance_unit );
+                    //Convert SHIP text boxes
+                    update_output_left_ship( gst_left_ship, gst_left_ship_combat, s_new_distance_unit );
+                    update_output_right_ship( gst_right_ship, gst_right_ship_combat, s_new_distance_unit );
+                    //Convert WEAPON text boxes
                     update_output_left_weapon( gst_left_weapon );
                     update_output_right_weapon( gst_right_weapon );
+                    //Convert COORDINATE text boxes
+                    update_hmi_coordinate( s_new_distance_unit );
+
+                    //Update global distance var
+                    gs_distance_unit = s_new_distance_unit;
                 }
+                //COORDINATE HANDLERS
+                my_form.input_left_north_south.onchange = function() { get_and_update_hmi_coordinate( gs_distance_unit ); };
+                my_form.input_left_east_west.onchange = function() { get_and_update_hmi_coordinate( gs_distance_unit ); };
+                my_form.input_right_north_south.onchange = function() { get_and_update_hmi_coordinate( gs_distance_unit ); };
+                my_form.input_right_east_west.onchange = function() { get_and_update_hmi_coordinate( gs_distance_unit ); };
+                
 
                 //Quick Selector for Left Ship
                 my_form.choice_left_ship.onchange =
@@ -984,7 +1056,7 @@
                     //Reset the combat data
                     gst_left_ship_combat = gst_ship_combat
                     //Show the ship data
-                    update_output_left_ship( st_ship, gst_left_ship_combat );
+                    update_output_left_ship( st_ship, gst_left_ship_combat, gs_distance_unit );
                 }
                 //Quick Selector for Right Ship
                 my_form.choice_right_ship.onchange =
@@ -995,7 +1067,7 @@
                     //Reset the combat data
                     gst_right_ship_combat = gst_ship_combat
                     //Show the ship data
-                    update_output_right_ship( st_ship, gst_right_ship_combat );
+                    update_output_right_ship( st_ship, gst_right_ship_combat, gs_distance_unit );
                 }
                 
                 //Quick Selector for Left Wepon
@@ -1109,6 +1181,15 @@
             }
 
             new_event("Start log: ", "now!")
+
+            //--------------------------------------------------------------------------------------
+            //  STARTUP
+            //--------------------------------------------------------------------------------------
+
+            //Fetch coordinates the first time to fill the coorddinate structures
+            get_distance_left_ship_center_to_center_right_ship_center()
+
+            update_hmi_coordinate(gs_distance_unit)
 
             //--------------------------------------------------------------------------------------
             //  EXECUTE UNIT TESTS
