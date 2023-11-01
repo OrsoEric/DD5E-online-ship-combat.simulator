@@ -332,6 +332,17 @@
                     <option value=1.5>Strong</option>
                 </select></p>
                 <b><div class="tooltip">Left Ship<span  class="tooltiptext">In this column are grouped all parameters relative to this ship</span></div></b>
+
+                <p>
+                    <div class="tooltip">North/South<span  class="tooltiptext">Position of the ship in the North/South axis relative to center of the map.</span></div>                    
+                    <input id="input_left_north_south" step="any" type="number" size="10" value="-10"/>
+                    <input id="output_left_north_south_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
+                </p>
+                <p>
+                    <div class="tooltip">East/West<span  class="tooltiptext">Position of the ship in the East/West axis relative to center of the map.</span></div>
+                    <input id="input_left_east_west" step="any" type="number" size="10" value="0"/>
+                    <input id="output_left_east_west_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
+                </p>
             </div>
             <div class="column">
                 <p>
@@ -350,15 +361,16 @@
                 <b><div class="tooltip">Right Ship<span  class="tooltiptext">In this column are grouped all parameters relative to this ship</span></div></b>
 
                 <p>
-                    <div class="tooltip">North/South<span  class="tooltiptext">Position of the ship in the North/South axis relative to center of the map.</span></div>
-                    <input id="output_right_north_south" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
+                    <div class="tooltip">North/South<span  class="tooltiptext">Position of the ship in the North/South axis relative to center of the map.</span></div>                    
+                    <input id="input_right_north_south" step="any" type="number" size="10" value="12"/>
                     <input id="output_right_north_south_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
                 </p>
                 <p>
                     <div class="tooltip">East/West<span  class="tooltiptext">Position of the ship in the East/West axis relative to center of the map.</span></div>
-                    <input id="output_right_east_west" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
+                    <input id="input_right_east_west" step="any" type="number" size="10" value="1"/>
                     <input id="output_right_east_west_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
                 </p>
+
                 <p>
                     <div class="tooltip">Ship Orientation<span  class="tooltiptext">Where the tip of the ship is pointing to. Can be one of eight cardinal directions.</span></div>
                     <input id="output_right_ship_orientation" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
@@ -373,16 +385,8 @@
                         <option value=180>Hard left</option>
                     </select>
                 </p>
-                <p><div class="tooltip">Rudder<span  class="tooltiptext">The rudder can be set to turn the ship.</span></div>
-                <select id="choice_right_rudder" value="neutral">
-                    <option value="neutral">Neutral</option>
-                    <option value="right">Turn Right</option>
-                    <option value="left">Turn Left</option>    
-                </select></p>
+                
             </div>
-            <p><canvas id="canvas_sea_map" width="720" height="720" style="border:1px solid #d3d3d3;">
-                Your browser does not support the HTML5 canvas tag.
-            </canvas></p>
             <p><input type="button" id="btn_next_turn" value="Next Turn"></p>
         </div>
 		<hr></hr>
@@ -411,24 +415,25 @@
             [
                 ["s_ship_name"              , "", "amerigo-vespucci", "sloop", "brigantine"],
                 ["s_ship_class"             , "Dummy", "Fully Rigged Ship", "Sloop", "Brigantine"],
-                ["n_displacement_max_t"     , 0,    4146,       30,   0   ,   ],
-                ["n_displacement_min_t"     , 0,    1230,       15,   0   ,   ],
-                ["n_length_m"               , 0,    100.5,      15,  0   ,   ],
-                ["n_width_m"                , 0,    15.6,       3,    0   ,   ],
-                ["n_height_m"               , 0,    54,         8,      0   ,   ],
-                ["n_depth_m"                , 0,    7.4,        1,     0   ,   ],
+                ["n_displacement_max_t"     , 0,        4146,       30,   0   ,   ],
+                ["n_displacement_min_t"     , 0,        1230,       15,   0   ,   ],
+                ["n_length_m"               , 0,        100.5,      15,  0   ,   ],
+                ["n_width_m"                , 0,        15.6,       3,    0   ,   ],
+                ["n_height_m"               , 0,        54,         8,      0   ,   ],
+                ["n_depth_m"                , 0,        7.4,        1,     0   ,   ],
                 //Maximum angle of the sails relative to the ship in degrees. Affect how well can a ship navigate against the wind.
-                ["n_sail_angle_max_deg"     , 0,    60,         40,  0   ,   ],
-                ["n_sail_surface_m2"        , 0,    2635,       40,  0   ,   ],
-                ["n_speed_m_over_s"         , 0,    7.71,       5.0,    0   ,   ],
-                ["n_cnt_max_mast"           , 0,    3,          1,     0   ,   ],
-                ["n_deck_lower"             , 0,    3,          1,     0   ,   ],
-                ["n_crew_total"             , 0,    394,        4,   0   ,   ],
-                ["n_crew_officiers"         , 0,    15,         1,    0   ,   ],
-                ["n_armament"               , 0,    17,         2,    0   ,   ],
-                ["n_dd_max_hp_health"       , 0,    4000,       100,    0   ,   ],
-                ["n_dd_ac_armor_class"      , 10,   18,         12,    0   ,   ],
-                ["n_dd_max_water_level"     , 0,    200,        10,    0   ,   ],
+                ["n_sail_angle_max_deg",    0,          60,         40,  0   ,   ],
+                ["n_sail_surface_m2",       0,          2635,       40,  0   ,   ],
+                ["n_speed_m_over_s",        0,          7.71,       5.0,    0   ,   ],
+                ["n_cnt_max_mast",          0,          3,          1,     0   ,   ],
+                ["n_deck_lower",            0,          3,          1,     0   ,   ],
+                ["n_crew_total",            0,          394,        4,          0,   ],
+                ["n_crew_officiers",        0,          15,         1,          0,   ],
+                ["n_armament",              0,          17,         2,          0,   ],
+                ["n_dd_max_hp_health",      0,          4000,       100,        0,   ],
+                ["n_dd_ac_armor_class",     10,         18,         12,         0,   ],
+                ["n_dd_max_water_level",    0,          200,        10,         0,   ],
+                ["x_valid",                 false,      true,       true,       true, ],
             ];
             //Given a ship name, load a ship with all its stats from the ship matrix
             function load_ship( is_ship )
@@ -444,7 +449,7 @@
                     n_ship_index = 1;
                 }
                 //Copy over the stats from the correct ship
-                for (let n_cnt = 1; n_cnt < gca_ships.length; n_cnt++)
+                for (let n_cnt = 0; n_cnt < gca_ships.length; n_cnt++)
                 {
                     let s_field = gca_ships[n_cnt][0];
                     let n_value = gca_ships[n_cnt][n_ship_index];
@@ -464,17 +469,83 @@
                 n_wind_direction_deg : 0.0,
                 //Realtive roughness of the sea, like waves. 0.0 means calm. 1.0 means rough. Affects weapon attack and ship navigation.
                 n_sea_roughness : 0.0,
-            }
+            };
             //Holds the navigation controls of the ship. This is the default structure, there is one for each ship.
-            gst_ship_navigation =
+            gcst_ship_navigation =
             {
+                //Coordinates of the center of the ship
+                n_coordinate_north_south_m : 0,
+                n_coordinate_east_west_m : 0,
                 //Direction of the ship in degrees, where the bow is pointing to. 0 degree is north. 90 degree is east. -90 degrees is west. -180/180 degrees is south
                 n_ship_direction_degrees : 0.0,
                 //Relative sail extension. 0.0 means retracted. 1.0 means extended. 
                 n_sail_extension : 0.0,
                 //Direction of the sail relative to the ship. 0.0 means forward. 1.0 means full extent to the right, -1.0 means full extent to the left.
                 n_sail_direction : 0.0,
+            };
+            gst_left_ship_navigation = gcst_ship_navigation;
+            gst_right_ship_navigation = gcst_ship_navigation;
+
+            //--------------------------------------------------------------------------------------
+            //  WEAPONS
+            //--------------------------------------------------------------------------------------
+
+            //Ship stats
+            gca_weapons =
+            [
+                //Name of the weapon
+                ["s_weapon_name",           "",         "cannon-40mm",],
+                //Weight of the weapon and ammunition in Kg
+                ["n_weight_weapon",         0,          200,],
+                ["n_weight_ammunition",     0,          2.0,],
+                //Gold Cost of weapon and ammunition
+                ["n_gold_weapon",           0,          100,],
+                ["n_gold_ammunition",       0,          100,],
+                //Angle that weapon can be rotated left/right in degrees
+                ["n_angle_aim_horizontal",  0,          20,],
+                    //D&D Stats of the weapon
+                //Minimum range for firing the weapon in meters
+                ["n_range_min",             0,          5,],
+                //BaseAttack of the weapon at minimum range
+                ["n_dd_attack",             0,          10,     ],
+                //Penality to attck roll due to range in meters
+                ["n_dd_attack_decay_range", 0,          -0.3,     ],
+                //Attack type
+                ["n_dd_damage_type",        "",         "blunt",],
+                //Die roll of the weapon damage if hit
+                ["n_dd_damage_offset",      0,          1,],
+                ["n_dd_damage_die_size",    0,          10,],
+                ["n_dd_damage_roll_dies",   0,          3,],
+                //Area of the weapon in meter
+                ["n_dd_damage_aoe",         0,          0,],
+                ["x_valid",                 false,      true, ],
+            ];
+            //Given a weapon name, load the weapon with all its stats from the weapon matrix
+            function load_weapon( is_weapon )
+            {
+                //search the weapon in the matrix
+                let n_weapon_index = gca_weapons[0].indexOf(is_weapon);
+                //Allocate return structure
+                let st_weapon = {};
+                if (n_weapon_index === -1)
+                {
+                    console.log("ERR: weapon not found in the matrix: ", is_weapon);
+                    //Use the N.A. weapon
+                    n_weapon_index = 1;
+                }
+                //Copy over the stats from the correct weapon
+                for (let n_cnt = 0; n_cnt < gca_weapons.length; n_cnt++)
+                {
+                    let s_field = gca_weapons[n_cnt][0];
+                    let n_value = gca_weapons[n_cnt][n_weapon_index];
+                    st_weapon[s_field] = n_value;
+                }
+                //console.log("Load Weapon: ", st_weapon );
+                return st_weapon;
             }
+            //Initialize global weapons
+            gst_left_weapon = load_weapon("")
+            gst_right_weapon = load_weapon("")
             //Holds combat status vars of the ship. One for each ship.
             gst_ship_combat = 
             {
@@ -495,65 +566,6 @@
             gst_left_ship_combat = gst_ship_combat;
             gst_right_ship_combat = gst_ship_combat;
 
-            //--------------------------------------------------------------------------------------
-            //  WEAPONS
-            //--------------------------------------------------------------------------------------
-
-            //Ship stats
-            gca_weapons =
-            [
-                //Name of the weapon
-                ["s_weapon_name",           "",     "cannon-40mm",],
-                //Weight of the weapon and ammunition in Kg
-                ["n_weight_weapon",         0,      200,],
-                ["n_weight_ammunition",     0,      2.0,],
-                //Gold Cost of weapon and ammunition
-                ["n_gold_weapon",           0,      100,],
-                ["n_gold_ammunition",       0,      100,],
-                //Angle that weapon can be rotated left/right in degrees
-                ["n_angle_aim_horizontal",  0,      20,],
-                    //D&D Stats of the weapon
-                //Minimum range for firing the weapon in meters
-                ["n_range_min",             0,      5,],
-                //BaseAttack of the weapon at minimum range
-                ["n_dd_attack",             0,      10,     ],
-                //Penality to attck roll due to range in meters
-                ["n_dd_attack_decay_range", 0,      -0.3,     ],
-                //Attack type
-                ["n_dd_damage_type",        "",     "blunt",],
-                //Die roll of the weapon damage if hit
-                ["n_dd_damage_offset",      0,      1,],
-                ["n_dd_damage_die_size",    0,      10,],
-                ["n_dd_damage_roll_dies",   0,      3,],
-                //Area of the weapon in meter
-                ["n_dd_damage_aoe",         0,      0,],
-            ];
-            //Given a weapon name, load the weapon with all its stats from the weapon matrix
-            function load_weapon( is_weapon )
-            {
-                //search the weapon in the matrix
-                let n_weapon_index = gca_weapons[0].indexOf(is_weapon);
-                //Allocate return structure
-                let st_weapon = {};
-                if (n_weapon_index === -1)
-                {
-                    console.log("ERR: weapon not found in the matrix: ", is_weapon);
-                    //Use the N.A. weapon
-                    n_weapon_index = 1;
-                }
-                //Copy over the stats from the correct weapon
-                for (let n_cnt = 1; n_cnt < gca_weapons.length; n_cnt++)
-                {
-                    let s_field = gca_weapons[n_cnt][0];
-                    let n_value = gca_weapons[n_cnt][n_weapon_index];
-                    st_weapon[s_field] = n_value;
-                }
-                //console.log("Load Weapon: ", st_weapon );
-                return st_weapon;
-            }
-            //Initialize global weapons
-            gst_left_weapon = load_weapon("")
-            gst_right_weapon = load_weapon("")
 
             //--------------------------------------------------------------------------------------
             //  UTILITY FUNCTIONS
@@ -662,18 +674,21 @@
                 switch(is_source_unit)
                 {
                     //1 square -> 1.5 meters
+                    case "[sq]":
                     case "square":
                     {
                         n_value_m = in_value *1.5;
                         break;
                     }
                     //1 meter -> 1 meter (Default unit)
+                    case "[m]":
                     case "meter":
                     {
                         n_value_m = in_value *1.0;
                         break;
                     }
                     //1 feet -> 0.3048 m
+                    case "[ft]":
                     case "feet":
                     {
                         n_value_m = in_value /3.28084;
@@ -689,18 +704,21 @@
                 switch(is_dest_unit)
                 {
                     //1m -> 1/1.5sq
+                    case "[sq]":
                     case "square":
                     {
                         n_value_converted = n_value_m /1.5;
                         break;
                     }
                     //1m -> 1m (Default unit)
+                    case "[m]":
                     case "meter":
                     {
                         n_value_converted = n_value_m *1.0;
                         break;
                     }
                     //1m -> 3.28084ft
+                    case "[ft]":
                     case "feet":
                     {
                         n_value_converted = n_value_m *3.28084;
@@ -720,20 +738,48 @@
             //  HMI FUNCTIONS
             //--------------------------------------------------------------------------------------
 
+            function get_distance_left_ship_center_to_center_right_ship_center()
+            {
+                //CHECK SHIPS
+                if (gst_left_ship.x_valid == false) 
+                {
+                    console.log("UNABLE: Select the Left Ship...")
+                    return;
+                }
+                if (gst_right_ship.x_valid == false) 
+                {
+                    console.log("UNABLE: Select the Right Ship...")
+                    return;
+                }
+                //FETCH distance
+
+                
+                gst_left_ship_navigation.n_coordinate_north_south_m = parseEng( convert_distance_unit( my_form.input_left_north_south.value, my_form.output_left_north_south_unit.value, 'meter' ) );
+                console.log("Distance:", my_form.input_left_north_south.value, my_form.output_left_north_south_unit.value , gst_left_ship_navigation.n_coordinate_north_south_m);
+                
+                
+
+
+                return
+            }
+
             function update_distance_unit( s_distance_unit )
             {
                 switch(s_distance_unit)
                 {
+                    case "[sq]":
                     case "square":
                     {
                         s_distance_unit_short = "[sq]";
                         break;
                     }
+                    case "[m]":
                     case "meter":
                     {
                         s_distance_unit_short = "[m]";
                         break;
                     }
+                    case "[ft]":
                     case "feet":
                     {
                         s_distance_unit_short = "[ft]";
@@ -916,11 +962,6 @@
                 my_form.choice_distance_unit.onchange=
                 function()
                 {
-                    //Initialize data field the first time
-                    //if (!my_form.choice_distance_unit.data)
-                    //{
-                    //    my_form.choice_distance_unit.data = "[square]";
-                    //}
                     console.log( "NOT IMPLEMENTED: choice_distance_unit", my_form.choice_distance_unit.data, my_form.choice_distance_unit.value );
 
                     gs_distance_unit = my_form.choice_distance_unit.value;
@@ -965,6 +1006,8 @@
                     st_weapon = load_weapon(my_form.choice_left_weapon.value);
                     //Show the ship data
                     update_output_left_weapon( st_weapon );
+
+                    get_distance_left_ship_center_to_center_right_ship_center();
                 }
                 //Quick Selector for Left Wepon
                 my_form.choice_right_weapon.onchange =
@@ -976,18 +1019,53 @@
                     update_output_right_weapon( st_weapon );
                 }
 
+                //Fire left weapon against Right Ship
                 my_form.btn_left_weapon_fire.onclick = 
                 function()
                 {
-                    console.log(my_form.btn_left_weapon_fire.value)
+                    //Check selection
+                    if (gst_left_weapon.x_valid == false) 
+                    {
+                        console.log("UNABLE: Select the Left Weapon...")
+                        return;
+                    }
+                    if (gst_left_ship.x_valid == false) 
+                    {
+                        console.log("UNABLE: Select the Left Ship to fire...")
+                        return;
+                    }
+                    if (gst_right_ship.x_valid == false) 
+                    {
+                        console.log("UNABLE: Select the Right Ship to fire...")
+                        return;
+                    }
+
+                    console.log("Left ship: ", gst_left_ship.s_ship_name, "FIRE on Right Ship: ", gst_right_ship.s_ship_name, " with Left Weapon: ", gst_left_weapon.s_weapon_name )
                     simulate_weapon_attack(0,0,0)
+                    return;
                 }
                 my_form.btn_right_weapon_fire.onclick = 
                 function()
                 {
-                    console.log(my_form.btn_right_weapon_fire.value)
-                }
+                    //Check selection
+                    if (gst_right_weapon.x_valid == false) 
+                    {
+                        console.log("UNABLE: Select the Right Weapon...")
+                        return;
+                    }
+                    if (gst_left_ship.x_valid == false) 
+                    {
+                        console.log("UNABLE: Select the Left Ship to fire...")
+                        return;
+                    }
+                    if (gst_right_ship.x_valid == false) 
+                    {
+                        console.log("UNABLE: Select the Right Ship to fire...")
+                        return;
+                    }
 
+                    console.log("Right ship: ", gst_right_ship.s_ship_name, "FIRE on Left Ship: ", gst_right_ship.s_ship_name, " with Right Weapon: ", gst_right_weapon.s_weapon_name )
+                }
 
                 my_form.btn_left_water_intake.onclick = 
                 function()
@@ -1031,14 +1109,6 @@
             }
 
             new_event("Start log: ", "now!")
-            //--------------------------------------------------------------------------------------
-            //  CANVAS SEA MAP
-            //--------------------------------------------------------------------------------------
-            //  Draw the two ship on the canvas
-
-            var canvas_sea_map = document.getElementById("canvas_sea_map");
-            //canvas_context = my_form.canvas_sea_map.getContext("2d");
-            console.log("canvas dimensions: ", canvas_sea_map)
 
             //--------------------------------------------------------------------------------------
             //  EXECUTE UNIT TESTS

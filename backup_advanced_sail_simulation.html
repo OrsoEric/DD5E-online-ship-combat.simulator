@@ -1,0 +1,21 @@
+<p><canvas id="canvas_sea_map" width="720" height="720" style="border:1px solid #d3d3d3;">
+    Your browser does not support the HTML5 canvas tag.
+</canvas></p>
+
+<p><div class="tooltip">Rudder<span  class="tooltiptext">The rudder can be set to turn the ship.</span></div>
+<select id="choice_right_rudder" value="neutral">
+    <option value="neutral">Neutral</option>
+    <option value="right">Turn Right</option>
+    <option value="left">Turn Left</option>    
+</select></p>
+
+//--------------------------------------------------------------------------------------
+//  CANVAS SEA MAP
+//--------------------------------------------------------------------------------------
+//  Draw the two ship on the canvas
+
+var canvas_sea_map = document.getElementById("canvas_sea_map");
+//canvas_context = my_form.canvas_sea_map.getContext("2d");
+console.log("canvas dimensions: ", canvas_sea_map)
+
+
