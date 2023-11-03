@@ -1101,7 +1101,10 @@
             {
                 let st_damage_report = 
                 {
+                    //true: hit
                     x_hit : false,
+                    x_crit : false,
+                    s_side_effect : "",
                 };
 
                 //Compute the attack range penalty of the weapon
@@ -1175,13 +1178,76 @@
                 }
                 //Roll the attack damage
                 st_damage_report.n_damage = roll_many_die( n_num_damage_rolls, ist_weapon.n_dd_damage_die_faces );
-                
                 new_event("Damage: ", st_damage_report.n_damage, " | (", n_num_damage_rolls, "d", ist_weapon.n_dd_damage_die_faces, ")" );
-                //
-                
-
-                
-                return;
+                //Now process special events
+                //TODO: miss your desired target for another target if the attack is marginal hit
+                //SIDE EFFECTS
+                switch(st_attack_modifiers.s_target)
+                {
+                    //Hitting the HULL causes holes above waterline
+                    //Crits on the HULL causes holes below the waterline
+                    case "target-hull":
+                    {
+                        if (st_damage_report.x_crit == false)
+                        {
+                            st_damage_report.s_side_effect = "hull_breach_above_waterline";
+                        }
+                        else
+                        {
+                            st_damage_report.s_side_effect = "hull_breach_below_waterline";
+                        }
+                        break;
+                    }
+                    //HIT cause damage to splash to a crew
+                    //CRIT is a direct hit to a crew, and thrown overboard
+                    case "target-deck":
+                    {
+                        if (st_damage_report.x_crit == false)
+                        {
+                            st_damage_report.s_side_effect = "crew-hit";
+                        }
+                        else
+                        {
+                            st_damage_report.s_side_effect = "crew-crit";
+                        }   
+                        break;
+                    }
+                    //HIT cause hole in the sail that impair mobility
+                    //CRIT cause a mast to collapse, severly impairing mobility
+                    case "target-sail":
+                    {
+                        if (st_damage_report.x_crit == false)
+                        {
+                            st_damage_report.s_side_effect = "sail-hole";
+                        }
+                        else
+                        {
+                            st_damage_report.s_side_effect = "mast-down";
+                        }
+                        break;
+                    }
+                    //HIT: cause a weapon to be lodged out of position, require action to be rearmed
+                    //CRIT: destroys a weapon
+                    case "target-weapon":
+                    {
+                        if (st_damage_report.x_crit == false)
+                        {
+                            st_damage_report.s_side_effect = "weapon-disabled";
+                        }
+                        else
+                        {
+                            st_damage_report.s_side_effect = "weapon-destroyed";
+                        }
+                        break;
+                    }
+                    default:
+                    {
+                        console.log("ERR: invalid target: ", st_attack_modifiers.s_target);
+                    }
+                }
+                //Return the damage report, it must be applied to the appropriate ship
+                console.log("Damage report: ", st_damage_report );
+                return st_damage_report;
             }
 
             //--------------------------------------------------------------------------------------
