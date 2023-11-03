@@ -197,11 +197,12 @@
                 </p>
 
                 <p>
-                    <div class="tooltip">Target<span  class="tooltiptext">Where the weapon is aiming. HULL is easy to hit. DECK is harder to hit and can cause crew damage. SAIL are hardest to hit, and cause sail and mast damage. Arcing weapon have bonus attack on DECK.</span></div>
+                    <div class="tooltip">Target<span  class="tooltiptext">Where the weapon is aiming. HULL is easy to hit. DECK is harder to hit and can cause crew damage. SAIL are hardest to hit, and cause sail and mast damage. WEAPON tries to disable or destroy weapons. Arcing weapon have bonus attack on DECK.</span></div>
                     <select id="choice_target" value="target-hull">
                         <option value="target-hull">Hull</option>
                         <option value="target-deck">Deck</option>
                         <option value="target-sail">Sail</option>
+                        <option value="target-weapons">Weapons</option>
                     </select>
                 </p>
 
@@ -218,9 +219,8 @@
                     <div class="tooltip">Left Weapon<span  class="tooltiptext">Select the weapon you want to fire with. Simulator will tell you what side has the ship on sight.</span></div>
                     <select id="choice_left_weapon">
                         <option value=""></option>
-                        <option value="cannon-40mm">Cannon 40[mm]</option>
-                        <option value="cannon-60mm">Cannon 60[mm]</option>
-                        <option value="cannon-75mm">Cannon 75[mm]</option>
+                        <option value="cannon-64mm">Cannon 63[mm] - Cannonball 0.9[Kg]</option>
+                        <option value="cannon-63mm-chain">Cannon 63[mm] - Chainlink 1.9[Kg]</option>
                         <option value="ballista-2kg">Ballista 2[Kg]</option>
                         <option value="catapult-5kg">Catapult 5[Kg]</option>
                     </select>
@@ -263,9 +263,8 @@
                     <div class="tooltip">Right Weapon<span  class="tooltiptext">Select the weapon you want to fire with</span></div>
                     <select id="choice_right_weapon">
                         <option value=""></option>
-                        <option value="cannon-40mm">Cannon 40[mm]</option>
-                        <option value="cannon-60mm">Cannon 60[mm]</option>
-                        <option value="cannon-75mm">Cannon 75[mm]</option>
+                        <option value="cannon-64mm">Cannon 63[mm] - Cannonball 0.9[Kg]</option>
+                        <option value="cannon-63mm-chain">Cannon 63[mm] - Chainlink 1.9[Kg]</option>
                         <option value="ballista-2kg">Ballista 2[Kg]</option>
                         <option value="catapult-5kg">Catapult 5[Kg]</option>
                     </select>
@@ -465,28 +464,47 @@
             //Ship stats
             gca_ships =
             [
-                ["s_ship_name"              , "", "amerigo-vespucci", "sloop", "brigantine"],
-                ["s_ship_class"             , "Dummy", "Fully Rigged Ship", "Sloop", "Brigantine"],
-                ["n_displacement_max_t"     , 0,        4146,       30,   0   ,   ],
-                ["n_displacement_min_t"     , 0,        1230,       15,   0   ,   ],
-                ["n_length_m"               , 0,        100.5,      15,  0   ,   ],
-                ["n_width_m"                , 0,        15.6,       3,    0   ,   ],
-                ["n_height_m"               , 0,        54,         8,      0   ,   ],
-                ["n_depth_m"                , 0,        7.4,        1,     0   ,   ],
-                //Maximum angle of the sails relative to the ship in degrees. Affect how well can a ship navigate against the wind.
-                ["n_sail_angle_max_deg",    0,          60,         40,  0   ,   ],
-                ["n_sail_surface_m2",       0,          2635,       40,  0   ,   ],
-                ["n_speed_m_over_s",        0,          7.71,       5.0,    0   ,   ],
-                ["n_cnt_max_mast",          0,          3,          1,     0   ,   ],
-                ["n_deck_lower",            0,          3,          1,     0   ,   ],
-                ["n_crew_total",            0,          394,        4,          0,   ],
-                ["n_crew_officiers",        0,          15,         1,          0,   ],
-                ["n_armament",              0,          17,         2,          0,   ],
-                ["n_dd_max_hp_health",      0,          4000,       100,        0,   ],
-                ["n_dd_ac_armor_class",     10,         18,         12,         0,   ],
-                ["n_dd_max_water_level",    0,          200,        10,         0,   ],
-                ["x_valid",                 false,      true,       true,       true, ],
+                ["s_ship_id",               "",         "amerigo-vespucci",     "pufferfish-sloop",     "circus-charlie",       "concordia-brig",           ],
+                ["s_ship_name",             "",         "Amerigo Vespucci",     "Fishing Sloop",        "Circus Charlie",       "Glass Ceiling",            ],
+                ["s_ship_class",            "Dummy",    "Fully Rigged",         "Pufferfish Sloop",     "Pufferfish Sloop",     "Concordia Brigantine",     ],
+                ["s_ship_manufacturer",     "",         "Venetian Arsenal",     "Eeland Shipyard",      "Eeland Shipyard",      "Riva Shipyard",            ],
+                ["n_displacement_max_t",    0,          4146,                   30,                     30,                     0,                          ],
+                ["n_displacement_min_t",    0,          1230,                   15,                     15,                     0,                          ],
+                ["n_length_m",              0,          100.5,                  15,                     15,                     0,                          ],
+                ["n_width_m",               0,          15.6,                   3,                      3,                      0,                          ],
+                ["n_height_m",              0,          54,                     8,                      10,                     0,                          ],
+                ["n_depth_m",               0,          7.4,                    1,                      1,                      0,                          ],
+                //Maximum angle of the sails relative to the ship                                                               
+                ["n_sail_angle_max_deg",    0,          60,                     40,                     40,                     0,                          ],
+                ["n_sail_surface_m2",       0,          2635,                   40,                     60,                     0,                          ],
+                ["n_speed_m_over_s",        0,          7.71,                   5.0,                    7.0,                    0,                          ],
+                ["n_cnt_max_mast",          0,          3,                      1,                      1,                      0,                          ],
+                ["n_deck_lower",            0,          3,                      1,                      1,                      0,                          ],
+                ["n_crew_total",            0,          394,                    4,                      4,                      0,                          ],
+                ["n_crew_officiers",        0,          15,                     1,                      1,                      0,                          ],
+                ["n_armament",              0,          17,                     0,                      1,                      0,                          ],
+                ["n_dd_max_hp_health",      0,          4000,                   100,                    150,                    0,                          ],
+                ["n_dd_ac_armor_class",     10,         18,                     12,                     13,                     0,                          ],
+                ["n_dd_max_water_level",    0,          200,                    10,                     10,                     0,                          ],
+                ["n_weapon_1",              "",         "cannon-63mm",          "",                     "cannon-63mm",          "cannon-76mm",              ],
+                ["n_weapon_1_placement",    "",         "2RIGHT 2LEFT",         "",                     "1 FRONT",              "2RIGHT 2LEFT",             ],
+                ["n_weapon_2",              "",         "cannon-76mm",          "",                     "harpoon",              0,                          ],
+                ["n_weapon_2_placement",    "",         "3RIGHT 3LEFT",         "",                     "1 FRONT",              0,                          ],
+                ["n_weapon_3",              "",         "cannon-127mm",         "",                     "",                     0,                          ],
+                ["n_weapon_3_placement",    "",         "8RIGHT 8LEFT",         "",                     "",                     0,                          ],
+                ["x_valid",                 false,      true,                   true,                   true,                   true,                       ],
             ];
+
+            let gca_ships_transposed =
+            [
+                ["s_ship_id",               "s_ship_name",          "s_ship_class",             "s_ship_manufacturer",      "n_displacement_min_t",     "n_displacement_max_t", "n_length_m",   "n_width_m",    "n_height_m",   "n_depth_m",    "n_sail_angle_max_deg",     "n_sail_surface_m2",    "n_speed_m_over_s", "n_cnt_max_mast",   "n_deck_lower", "n_crew_total", "n_crew_officiers", "n_armament",   "n_dd_max_hp_health",   "n_dd_ac_armor_class", "n_dd_max_water_level", "n_weapon_1_type",   "n_weapon_1_placement", "n_weapon_2_type",  "n_weapon_2_placement", "n_weapon_3_type",  "n_weapon_3_placement", "x_valid" ],
+                ["",                        "",                     "Dummy",                    "",                         0,                          0,                      0,              0,              0,              0,              0,                          0,                      0,                  0,                  0,              0,              0,                  0,              0,                      10,                     0,                      "",                 "",                     "",                 "",                     "",                 "",                     false,  ],
+                ["amerigo-vespucci",        "Amerigo Vespucci",     "Fully Rigged",             "Venetian Arsenal",         1230,                       4146,                   100.5,          15.6,           54,             7.4,            60,                         2635,                   7.71,               3,                  3,              394,            15,                 17,             4000,                   18,                     200,                    "cannon-63mm",      "2 RIGHT, 2 LEFT",      "cannon-76mm",      "3 RIGHT, 3 LEFT",      "cannon-127mm",     "8 RIGHT, 8 LEFT",      true,   ],
+                ["pufferfish-sloop",        "Fishing Sloop",        "Pufferfish Sloop",         "Eeland Shipyard",          15,                         30,                     15,             3,              8,              1,              40,                         40,                     5.0,                1,                  1,              4,              1,                  0,              100,                    12,                     10,                     "",                 "",                     "",                 "",                     "",                 "",                     true,   ],
+                ["circus-charlie",          "Circus Charlie",       "Pufferfish Sloop",         "Eeland Shipyard",          15,                         30,                     15,             3,              10,             1,              40,                         60,                     7.0,                1,                  1,              4,              1,                  1,              150,                    13,                     10,                     "cannon-63mm",      "1 FRONT",              "harpoon",          "1 FRONT",              "",                 "",                     true,   ],
+                ["concordia-brig",          "Glass Ceiling",        "Concordia Brigantine",     "Riva Shipyard",            0,                          0,                      0,              0,              0,              0,              0,                          0,                      0,                  0,                  0,              0,              0,                  0,              0,                      0,                      0,                      "cannon-76mm",      "2 RIGHT, 2 LEFT",      "",                 "",                     "",                 "",                     true,   ],
+            ];      
+
             //Given a ship name, load a ship with all its stats from the ship matrix
             function load_ship( is_ship )
             {
@@ -509,6 +527,25 @@
                 }
                 return st_ship;
             }
+
+            function load_ship_transpose( is_ship )
+            {
+                let shipData = gca_ships_transposed.find(row => row[0] === is_ship);
+                if (!shipData)
+                {
+                    return null;
+                }
+
+                let st_ship = {};
+                for (let i = 0; i < gca_ships_transposed[0].length; i++)
+                {
+                    let s_field = gca_ships_transposed[0][i];
+                    st_ship[s_field] = shipData[i];
+                }
+
+                return st_ship;
+            }
+
             //Initialize both ship to no ship
             gst_left_ship = load_ship("");
             gst_right_ship = load_ship("");
@@ -548,32 +585,34 @@
             gca_weapons =
             [
                 //Name of the weapon
-                ["s_weapon_name",               "",         "cannon-40mm",],
+                ["s_weapon_name",                   "",         "cannon-63mm", "cannon-63mm-chain"],
                 //Weight of the weapon and ammunition in Kg
-                ["n_weight_weapon",             0,          200,],
-                ["n_weight_ammunition",         0,          2.0,],
+                ["n_weight_weapon",                 0,          275,        275,    ],
+                ["n_weight_ammunition",             0,          0.9,        1.9,    ],
                 //Gold Cost of weapon and ammunition
-                ["n_gold_weapon",               0,          100,],
-                ["n_gold_ammunition",           0,          100,],
+                ["n_gold_weapon",                   0,          100,        100,    ],
+                ["n_gold_ammunition",               0,          0.5,        1.5,    ],
                 //Angle that weapon can be rotated left/right in degrees
-                ["n_angle_aim_horizontal",      0,          20,],
+                ["n_angle_aim_horizontal",          0,          20,         20      ],
                     //D&D Stats of the weapon
                 //Minimum range for firing the weapon in meters
-                ["n_dd_range_min",              0,          5,],
-                //Penality to attck roll due to range in meters
-                ["n_dd_attack_decay_range_m",   0,          -0.3,     ],
-                ["n_dd_attack_hull_penalty",    0,          -0,     ],
-                ["n_dd_attack_deck_penalty",    0,          -4,     ],
-                ["n_dd_attack_sail_penalty",    0,          -2,     ],
+                ["n_dd_range_min",                  0,          5,          5       ],
+                ["n_dd_range_max",                  0,          250,        200      ],
+                //Penality to attack roll
+                ["n_dd_attack_max_range_penality",  0,          -10,        -10     ],
+                ["n_dd_attack_hull_penalty",        0,          -0,         -2       ],
+                ["n_dd_attack_sail_penalty",        0,          -2,         0       ],
+                ["n_dd_attack_weapon_penalty",      0,          -3,         -4      ],
+                ["n_dd_attack_deck_penalty",        0,          -4,         -3      ],
                 //Attack type
-                ["n_dd_damage_type",            "",         "blunt",],
+                ["n_dd_damage_type",                "",         "blunt",    "slash" ],
                 //Die roll of the weapon damage if hit
-                ["n_dd_damage_offset",          0,          1,],
-                ["n_dd_damage_die_size",        0,          10,],
-                ["n_dd_damage_roll_dies",       0,          3,],
+                ["n_dd_damage_offset",              0,          1,          1,      ],
+                ["n_dd_damage_die_size",            0,          10,         10,      ],
+                ["n_dd_damage_roll_dies",           0,          3,          2,      ],
                 //Area of the weapon in meter
-                ["n_dd_damage_aoe",             0,          0,],
-                ["x_valid",                     false,      true, ],
+                ["n_dd_damage_aoe",                 0,          0,          1.5,    ],
+                ["x_valid",                         false,      true,       true,   ],
             ];
             //Given a weapon name, load the weapon with all its stats from the weapon matrix
             function load_weapon( is_weapon )
@@ -1054,9 +1093,65 @@
             //--------------------------------------------------------------------------------------
             //  
 
+            //Compute the attack penalty due to range. 
+            function compute_attack_range_penalty( ist_weapon, in_range )
+            {
+                //If minimum range is zero, there is no minimum range
+                st_attack_range_penalty =
+                {
+                    //true, the target is in range
+                    x_in_range : false,
+                    //Penalty to attack roll due to range
+                    n_attack_range_penalty : 0,
+                }
+
+
+                //If beyond the minimum distance, apply range penality
+                let n_range_penality = 0;
+                if ((in_range <= ist_weapon.n_dd_range_min) && (ist_weapon.n_dd_range_min > 0))
+                {
+                    st_attack_range_penalty.x_in_range = false;
+                    st_attack_range_penalty.n_attack_range_penalty = -20;
+
+                }
+                else if (in_range >= ist_weapon.n_dd_range_max)
+                {
+                    st_attack_range_penalty.x_in_range = false;
+                    st_attack_range_penalty.n_attack_range_penalty = -20;    
+                }
+                else
+                {
+                    st_attack_range_penalty.x_in_range = true;
+                    console.log("Min: ", ist_weapon.n_dd_range_min, " | Max: ", ist_weapon.n_dd_range_max,  " | Max penalty", ist_weapon.n_dd_attack_max_range_penality, " | Range: ", in_range );
+                    //in_range == min range -> penalty = 0
+                    //in_range == max range -> penalty = max penalty
+                    st_attack_range_penalty.n_attack_range_penalty = Math.floor( ist_weapon.n_dd_attack_max_range_penality *(in_range -ist_weapon.n_dd_range_min) /(ist_weapon.n_dd_range_max -ist_weapon.n_dd_range_min));
+                
+                }
+                //Event if attack is out of range
+                if (st_attack_range_penalty.x_in_range == false)
+                {
+                    new_event("MISS | Distance [m]: ", in_range, "Min [m]: ", ist_weapon.n_dd_range_min, "Max [m]: ",  ist_weapon.n_dd_range_max );
+                }
+                
+                console.log("Weapon: ", ist_weapon, "Range: ", in_range, "Penalty", st_attack_range_penalty );
+                return st_attack_range_penalty;
+            }
+
             function simulate_weapon_attack( ist_ship_attacking, ist_ship_defending, ist_weapon, ist_wind_sea )
             {
-                st_damage_report = {};
+                st_damage_report =
+                {
+                    x_hit : false,
+                };
+
+                //Compute the attack range penalty of the weapon
+                let st_range_penality = compute_attack_range_penalty(ist_weapon, ist_wind_sea.n_distance_ship_center_to_ship_center_m );
+                if (st_range_penality.x_in_range == false)
+                {
+                    //Nothing to do
+                    return;
+                }
 
                 //Fetch the attack modifiers that apply
                 st_attack_modifiers = get_hmi_attack_modifiers();
@@ -1066,12 +1161,8 @@
                 st_damage_report.x_crit = (st_damage_report.n_raw_roll == 20);
                 //Account for bonuses
                 st_damage_report.n_bonus_roll = st_attack_modifiers.n_attack_bonus;
-                //If beyond the minimum distance, apply range penality
-                let n_range_penality = 0;
-                if (ist_wind_sea.n_distance_ship_center_to_ship_center_m >= ist_weapon.n_dd_range_min)
-                {
-                    n_range_penality = Math.floor( (ist_wind_sea.n_distance_ship_center_to_ship_center_m -ist_weapon.n_dd_range_min) *ist_weapon.n_dd_attack_decay_range_m);
-                }
+            
+                let n_range_penality = st_range_penality.n_attack_range_penalty;
                 //The target 
                 switch(st_attack_modifiers.s_target)
                 {
@@ -1088,6 +1179,11 @@
                     case "target-sail":
                     {
                         n_range_penality += ist_weapon.n_dd_attack_sail_penalty;
+                        break;
+                    }
+                    case "target-weapon":
+                    {
+                        n_range_penality += ist_weapon.n_dd_attack_weapon_penalty;
                         break;
                     }
                     default:
@@ -1190,8 +1286,9 @@
                 {
                     //Load the data of the ship
                     st_ship = load_ship(my_form.choice_left_ship.value);
+                    console.log( st_ship );
                     //Reset the combat data
-                    gst_left_ship_combat = gst_ship_combat
+                    gst_left_ship_combat = gst_ship_combat;
                     //Show the ship data
                     update_output_left_ship( st_ship, gst_left_ship_combat, gs_distance_unit );
                 }
@@ -1200,9 +1297,11 @@
                 function()
                 {
                     //Load the data of the ship
-                    st_ship = load_ship( my_form.choice_right_ship.value );
+                    //st_ship = load_ship( my_form.choice_right_ship.value );
+                    st_ship = load_ship_transpose( my_form.choice_right_ship.value );
+                    console.log( st_ship );
                     //Reset the combat data
-                    gst_right_ship_combat = gst_ship_combat
+                    gst_right_ship_combat = gst_ship_combat;
                     //Show the ship data
                     update_output_right_ship( st_ship, gst_right_ship_combat, gs_distance_unit );
                 }
