@@ -442,7 +442,7 @@
         </div>
 		<hr></hr>
         <b><div class="tooltip">Event Log<span  class="tooltiptext">log all the events</span></div></b>
-        <p><textarea id="txt_event_log" rows="10" cols="50">
+        <p><textarea id="txt_event_log" rows="10" cols="100", disabled="disabled">
         </textarea></p>
         <hr></hr>
         </fieldset>
@@ -1100,7 +1100,6 @@
                     n_attack_range_penalty : 0,
                 }
 
-
                 //If beyond the minimum distance, apply range penality
                 let n_range_penality = 0;
                 if ((in_range <= ist_weapon.n_dd_range_min) && (ist_weapon.n_dd_range_min > 0))
@@ -1296,8 +1295,9 @@
             let gcst_damage_simulation_parameters =
             {
                 //Difficulty for a fire to spread each turn
-                n_dd_dc_fire_spread : 12,
+                n_dd_dc_fire_spread : 18,
                 n_dd_die_fire_damage : 6,
+                n_dd_max_new_fires : 2,
                 //Difficulty for a hole above waterline hole to intake one bucket of water
                 n_dd_dc_hole_above_waterline_water_bucket_intake : 10,
                 //Difficulty for a hole below waterline hole to intake one bucket of water
@@ -1308,6 +1308,41 @@
             //each fire has a DC fire spread
             function simulate_damage_fire( ist_ship_combat )
             {
+                //No fires
+                if (ist_ship_combat.n_dd_cnt_fire_on_deck <= 0)
+                {
+                    //Do nothing
+                    return ist_ship_combat;
+                }
+
+                //For each fire
+                let n_cnt_new_fires = 0;
+                let n_fire_damage = 0;
+                //For each fire
+                for (let n_cnt = 0; n_cnt < ist_ship_combat.n_dd_cnt_fire_on_deck; n_cnt++)
+                {
+                    //The fire applies damage to the HULL
+                    n_fire_damage += roll_die(gcst_damage_simulation_parameters.n_dd_die_fire_damage);
+                    //The fire might spread
+                    let n_fire_spread_roll = roll_die(20);
+                    if (n_fire_spread_roll > gcst_damage_simulation_parameters.n_dd_dc_fire_spread)
+                    {
+                        
+                        n_cnt_new_fires += 1;
+                        //console.log("Roll: ", n_fire_spread_roll, " | new fires: ", n_cnt_new_fires);
+                    }
+                }
+                if (n_cnt_new_fires > gcst_damage_simulation_parameters.n_dd_max_new_fires)
+                {
+                    n_cnt_new_fires = gcst_damage_simulation_parameters.n_dd_max_new_fires;
+                }
+
+                //Accumulate results
+                ist_ship_combat.n_dd_hp_damage_taken += n_fire_damage;
+                ist_ship_combat.n_dd_cnt_fire_on_deck += n_cnt_new_fires;
+                console.log("Fires: ",ist_ship_combat.n_dd_cnt_fire_on_deck ," | Fire Damage Taken: ", n_fire_damage, " | Fire Spread: ", " | ", n_cnt_new_fires);
+                new_event("Fires: ",ist_ship_combat.n_dd_cnt_fire_on_deck , " | Fire Damage Taken: ", n_fire_damage, " | Fire Spread: ", n_cnt_new_fires );
+
                 return ist_ship_combat;
             }
 
@@ -1317,8 +1352,15 @@
             function simulate_damage()
             {
                 //Simulate fire damage and fire spread
+                new_event("LEFT SHIP SIMULATION");
                 gst_left_ship_combat = simulate_damage_fire( gst_left_ship_combat );
 
+                new_event("RIGHT SHIP SIMULATION");
+                gst_right_ship_combat = simulate_damage_fire( gst_right_ship_combat );
+
+                update_output_left_ship( gst_left_ship, gst_left_ship_combat, gs_distance_unit );
+                update_output_right_ship( gst_right_ship, gst_right_ship_combat, gs_distance_unit );
+                //update_output_right_ship();
             }
 
             //--------------------------------------------------------------------------------------
