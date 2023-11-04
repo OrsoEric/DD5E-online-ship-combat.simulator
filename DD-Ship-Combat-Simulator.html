@@ -519,9 +519,9 @@
                 //Direction of the sail relative to the ship. 0.0 means forward. 1.0 means full extent to the right, -1.0 means full extent to the left.
                 n_sail_direction : 0.0,
             };
-            let gst_left_ship_navigation = { gcst_ship_navigation };
-            let gst_right_ship_navigation = { gcst_ship_navigation };
-
+            let gst_left_ship_navigation = {...gcst_ship_navigation};
+            let gst_right_ship_navigation = {...gcst_ship_navigation};
+            
             //--------------------------------------------------------------------------------------
             //  WEAPONS
             //--------------------------------------------------------------------------------------
@@ -582,10 +582,10 @@
                 return st_weapon;
             }
             //Initialize global weapons
-            gst_left_weapon = load_weapon("")
-            gst_right_weapon = load_weapon("")
+            let gst_left_weapon = load_weapon("");
+            let gst_right_weapon = load_weapon("");
             //Holds combat status vars of the ship. One for each ship.
-            gst_ship_combat = 
+            let gst_ship_combat = 
             {
                 //Current damage taken. It's easier to track damage, makes it easier to reset.
                 n_dd_hp_damage_taken : 0,
@@ -601,8 +601,9 @@
                 n_dd_cnt_holes_below_waterline : 0,
             };
             //Initialize combat structures
-            let gst_left_ship_combat = { gst_ship_combat };
-            let gst_right_ship_combat = { gst_ship_combat };
+            let gst_left_ship_combat = {...gst_ship_combat};
+            let gst_right_ship_combat = {...gst_ship_combat};
+            //console.log("Left Combat: ", gst_left_ship_combat, " | Right Combat: ", gst_right_ship_combat );
 
             //--------------------------------------------------------------------------------------
             //  UTILITY FUNCTIONS
@@ -973,9 +974,9 @@
             function update_output_left_ship( ist_ship, ist_ship_combat, is_new_distance_unit )
             {
                 //Save the ship stat on global var
-                gst_left_ship = {ist_ship}
+                gst_left_ship = {...ist_ship};
                 //The stats are always meter, and converted on the fly
-                console.log("Left Ship: ", ist_ship);
+                console.log("Left Ship: ", ist_ship, " | Left Combat: ", ist_ship_combat);
                 //Ship dimensions
                 my_form.output_left_ship_length.value = parseEng( convert_distance_unit( ist_ship.n_length_m, 'meter', is_new_distance_unit ) );
                 my_form.output_left_ship_width.value = parseEng( convert_distance_unit( ist_ship.n_width_m, 'meter', is_new_distance_unit ) );
@@ -999,7 +1000,7 @@
             function update_output_right_ship( ist_ship, ist_ship_combat, is_new_distance_unit )
             {
                 //Save the ship stat on global var
-                gst_right_ship = ist_ship
+                gst_right_ship = {...ist_ship};
                 //The stats are always meter, and converted on the fly
                 console.log("Right Ship: ", ist_ship)
                 //Ship dimensions
@@ -1026,7 +1027,7 @@
             function update_output_left_weapon( ist_weapon )
             {
                 //Save the ship stat on global var
-                gst_left_weapon = ist_weapon
+                gst_left_weapon = {...ist_weapon}
                 //The stats are always meter, and converted on the fly
                 console.log("Left Weapon: ", ist_weapon);
 
@@ -1038,7 +1039,7 @@
             function update_output_right_weapon( ist_weapon )
             {
                 //Save the ship stat on global var
-                gst_right_weapon = ist_weapon
+                gst_right_weapon = {...ist_weapon}
                 //The stats are always meter, and converted on the fly
                 console.log("Right Weapon: ", ist_weapon);
 
@@ -1097,6 +1098,14 @@
                 return st_attack_range_penalty;
             }
 
+            //"hull_breach_above_waterline"
+            //"hull_breach_below_waterline"
+            //"crew-hit"
+            //"crew-crit"
+            //"sail-hole"
+            //"mast-down"
+            //"weapon-disabled"
+            //"weapon-destroyed"
             function simulate_weapon_attack( ist_ship_attacking, ist_ship_defending, ist_weapon, ist_wind_sea )
             {
                 let st_damage_report = 
@@ -1106,7 +1115,6 @@
                     x_crit : false,
                     s_side_effect : "",
                 };
-
                 //Compute the attack range penalty of the weapon
                 let st_range_penality = compute_attack_range_penalty(ist_weapon, ist_wind_sea.n_distance_ship_center_to_ship_center_m );
                 //RETURN if out of range
@@ -1190,11 +1198,11 @@
                     {
                         if (st_damage_report.x_crit == false)
                         {
-                            st_damage_report.s_side_effect = "hull_breach_above_waterline";
+                            st_damage_report.s_side_effect = "hull-breach-above-waterline";
                         }
                         else
                         {
-                            st_damage_report.s_side_effect = "hull_breach_below_waterline";
+                            st_damage_report.s_side_effect = "hull-breach-below-waterline";
                         }
                         break;
                     }
@@ -1323,7 +1331,7 @@
                     //Load the data of the ship
                     st_ship = load_ship_transpose( my_form.choice_left_ship.value );
                     //Reset the combat data
-                    gst_left_ship_combat = {gst_ship_combat};
+                    gst_left_ship_combat = {...gst_ship_combat};
                     //Show the ship data
                     update_output_left_ship( st_ship, gst_left_ship_combat, gs_distance_unit );
                 }
@@ -1334,7 +1342,7 @@
                     //Load the data of the ship
                     st_ship = load_ship_transpose( my_form.choice_right_ship.value );
                     //Reset the combat data
-                    gst_right_ship_combat = {gst_ship_combat};
+                    gst_right_ship_combat = {...gst_ship_combat};
                     //Show the ship data
                     update_output_right_ship( st_ship, gst_right_ship_combat, gs_distance_unit );
                 }
@@ -1364,6 +1372,7 @@
                 my_form.btn_left_weapon_fire.onclick = 
                 function()
                 {
+                    console.log("LEFT FIRE: ", gst_left_ship, gst_right_ship, gst_left_weapon, gst_wind_sea );
                     //Check selection
                     if (gst_left_weapon.x_valid == false) 
                     {
@@ -1382,8 +1391,48 @@
                     }
 
                     console.log("Left ship: ", gst_left_ship.s_ship_name, "FIRE on Right Ship: ", gst_right_ship.s_ship_name, " with Left Weapon: ", gst_left_weapon.s_weapon_name )
-
-                    st_damage_report = simulate_weapon_attack( gst_left_ship, gst_right_ship, gst_left_weapon, gst_wind_sea );
+                    //execute an attack and get a damage report
+                    let st_damage_report = simulate_weapon_attack( gst_left_ship, gst_right_ship, gst_left_weapon, gst_wind_sea );
+                    //If attack was successful
+                    if (st_damage_report.x_hit == true)
+                    {
+                        //Apply damage to the target ship
+                        gst_right_ship.n_dd_hp_damage_taken += st_damage_report.n_damage;
+                        //Apply side effects to the target ship
+                        switch (st_damage_report.s_side_effect) 
+                        {
+                            case "":
+                            {
+                                //Do nothing
+                                break;
+                            }
+                            case "hull-breach-above-waterline":
+                            {
+                                gst_right_ship.n_dd_cnt_holes_above_waterline += 1;
+                                break;
+                            }
+                            case "hull-breach-above-waterline":
+                            {
+                                gst_right_ship.n_dd_cnt_holes_below_waterline += 1;
+                                break;
+                            }
+                            case "sail-hole":
+                            {
+                                gst_right_ship.n_dd_cnt_holes_sail += 1;
+                                break;
+                            }
+                            case "mast-down":
+                            {
+                                gst_right_ship.n_dd_cnt_fallen_mast += 1;
+                                break;
+                            }
+                            default:
+                            {
+                                console.log("ERR: unhandled side effect: ", st_damage_report.s_side_effect );
+                            }
+                        }
+                        update_output_right_ship( gst_right_ship, gst_right_ship_combat, gs_distance_unit );
+                    }   //if HIT
                     return;
                 }
                 my_form.btn_right_weapon_fire.onclick = 
