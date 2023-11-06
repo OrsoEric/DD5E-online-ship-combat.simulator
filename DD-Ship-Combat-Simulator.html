@@ -213,6 +213,10 @@
                 </p>
 
                 <p>
+                    <textarea id="txt_left_ship_weapon_list" rows="1" cols="40", disabled="disabled"></textarea>
+                </p>
+
+                <p>
                     <div class="tooltip">Ship AC<span  class="tooltiptext">AC Armor Class models avoiding damage either by speed, cunning or bulk</span></div>
                     <input id="output_left_ship_ac" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
                 </p>
@@ -231,6 +235,12 @@
                     <div class="tooltip">Weapon Range (min)<span  class="tooltiptext">Minimum distance at which the weapon can be fired</span></div>
                     <input id="output_left_weapon_range_min" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
                     <input id="output_left_weapon_range_min_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
+                </p>
+
+                <p>
+                    <div class="tooltip">Weapon Range (max)<span  class="tooltiptext">Minimum distance at which the weapon can be fired</span></div>
+                    <input id="output_left_weapon_range_max" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
+                    <input id="output_left_weapon_range_max_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
                 </p>
 
                 <p><input type="button" id="btn_left_weapon_fire" value="Left Ship Fire Weapon"></p>
@@ -256,6 +266,10 @@
                 </p>
 
                 <p>
+                    <textarea id="txt_right_ship_weapon_list" rows="1" cols="40", disabled="disabled"></textarea>
+                </p>
+
+                <p>
                     <div class="tooltip">Ship AC<span  class="tooltiptext">AC Armor Class models avoiding damage either by speed, cunning or bulk</span></div>
                     <input id="output_right_ship_ac" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
                 </p>
@@ -274,6 +288,12 @@
                     <div class="tooltip">Weapon Range (min)<span  class="tooltiptext">Minimum distance at which the weapon can be fired</span></div>
                     <input id="output_right_weapon_range_min" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
                     <input id="output_right_weapon_range_min_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
+                </p>
+
+                <p>
+                    <div class="tooltip">Weapon Range (max)<span  class="tooltiptext">Minimum distance at which the weapon can be fired</span></div>
+                    <input id="output_right_weapon_range_max" step="any" type="text" size="10" value="0.0" disabled="disabled"/>
+                    <input id="output_right_weapon_range_max_unit" step="any" type="text" size="10" value="[m]" disabled="disabled"/>
                 </p>
 
                 <p><input type="button" id="btn_right_weapon_fire" value="Right Ship Fire Weapon"></p>
@@ -442,8 +462,7 @@
         </div>
 		<hr></hr>
         <b><div class="tooltip">Event Log<span  class="tooltiptext">log all the events</span></div></b>
-        <p><textarea id="txt_event_log" rows="10" cols="100", disabled="disabled">
-        </textarea></p>
+        <p><textarea id="txt_event_log" rows="10" cols="100", disabled="disabled"></textarea></p>
         <hr></hr>
         </fieldset>
     </form>
@@ -940,6 +959,43 @@
                 return st_attack_modifiers;
             }
 
+            //Fill an HMI text box, resize the number of rows
+            function update_hmi_text_box( ist_text_box, in_rows, is_message )
+            {
+                ist_text_box.rows = in_rows;
+                ist_text_box.value = is_message;
+                return;
+            }
+
+            //Given a text box weapon list, and a ship, fill it with the lists of equipped weapons
+            function update_hmi_weapon_list( ist_text_box, ist_ship )
+            {
+                console.log( ist_text_box, ist_ship );
+                n_cnt_weapon = 0;
+                s_weapon_list = "";
+                if (ist_ship.n_weapon_1_type.length > 0)
+                {
+                    n_cnt_weapon += 1;
+                    s_weapon_list += ist_ship.n_weapon_1_type +" | " +ist_ship.n_weapon_1_placement +"\n";
+                }
+                if (ist_ship.n_weapon_2_type.length > 0)
+                {   
+                    n_cnt_weapon += 1;
+                    s_weapon_list += ist_ship.n_weapon_2_type +" | " +ist_ship.n_weapon_2_placement +"\n";
+                }
+                if (ist_ship.n_weapon_3_type.length > 0)
+                {   
+                    n_cnt_weapon += 1;
+                    s_weapon_list += ist_ship.n_weapon_3_type +" | " +ist_ship.n_weapon_3_placement +"\n";
+                }
+                if (n_cnt_weapon == 0)
+                {
+                    n_cnt_weapon = 1;
+                    s_weapon_list = "unarmed";
+                }
+                update_hmi_text_box(ist_text_box, n_cnt_weapon, s_weapon_list );
+            }
+
             //Update the text labels that tell the user what the distance unit is
             function update_distance_unit( is_distance_unit )
             {
@@ -981,7 +1037,9 @@
 
                 //Weapon distance units
                 my_form.output_left_weapon_range_min_unit.value = s_distance_unit_short
+                my_form.output_left_weapon_range_max_unit.value = s_distance_unit_short
                 my_form.output_right_weapon_range_min_unit.value = s_distance_unit_short
+                my_form.output_right_weapon_range_max_unit.value = s_distance_unit_short
 
                 //Coordinate units
                 my_form.output_left_north_south_unit.value = s_distance_unit_short;
@@ -1012,18 +1070,23 @@
                 my_form.output_left_ship_cnt_max_mast.value = parseEng( ist_ship.n_cnt_max_mast );
                 my_form.output_left_ship_max_water.value = parseEng( ist_ship.n_dd_max_water_level );
                 
-                //DD Combat stats
-                my_form.output_left_ship_hp.value = parseEng( ist_ship.n_dd_max_hp_health -ist_ship_combat.n_dd_hp_damage_taken );
-                my_form.output_left_ship_cnt_fallen_mast.value = parseEng( ist_ship_combat.n_dd_cnt_fallen_mast );
-                my_form.output_left_ship_water.value = parseEng( ist_ship_combat.n_dd_water_level );
+                //Show the list of weapons of the ship
+                update_hmi_weapon_list( my_form.txt_left_ship_weapon_list, ist_ship );
 
+                my_form.output_left_ship_hp.value = parseInt( ist_ship.n_dd_max_hp_health -ist_ship_combat.n_dd_hp_damage_taken );
+                my_form.output_left_ship_cnt_fallen_mast.value = parseInt( ist_ship_combat.n_dd_cnt_fallen_mast );
+                my_form.output_left_ship_water.value = parseInt( ist_ship_combat.n_dd_water_level );
+
+
+
+                //DD combat state
                 my_form.output_left_ship_hp.value = parseEng( ist_ship.n_dd_max_hp_health -ist_ship_combat.n_dd_hp_damage_taken );
                 my_form.output_left_ship_water.value = parseInt( ist_ship_combat.n_dd_water_level );
                 my_form.output_left_deck_fires.value = parseInt( ist_ship_combat.n_dd_cnt_fire_on_deck );
                 my_form.output_left_ship_holes_above.value = parseInt( ist_ship_combat.n_dd_cnt_holes_above_waterline );
                 my_form.output_left_ship_holes_below.value = parseInt( ist_ship_combat.n_dd_cnt_holes_below_waterline );
                 my_form.output_left_ship_holes_sails.value = parseInt( ist_ship_combat.n_dd_cnt_holes_sail );                
-                my_form.output_left_ship_cnt_fallen_mast.value = parseEng( ist_ship_combat.n_dd_cnt_fallen_mast );
+                my_form.output_left_ship_cnt_fallen_mast.value = parseInt( ist_ship_combat.n_dd_cnt_fallen_mast );
 
                 return;
             }
@@ -1046,6 +1109,9 @@
                 my_form.output_right_ship_cnt_max_mast.value = parseEng( ist_ship.n_cnt_max_mast )
                 my_form.output_right_ship_max_water.value = parseEng( ist_ship.n_dd_max_water_level )
 
+                //Show the list of weapons of the ship
+                update_hmi_weapon_list( my_form.txt_right_ship_weapon_list, ist_ship );
+
                 //DD Combat stats
                 my_form.output_right_ship_hp.value = parseEng( ist_ship.n_dd_max_hp_health -ist_ship_combat.n_dd_hp_damage_taken );
                 my_form.output_right_ship_water.value = parseInt( ist_ship_combat.n_dd_water_level );
@@ -1053,7 +1119,7 @@
                 my_form.output_right_ship_holes_above.value = parseInt( ist_ship_combat.n_dd_cnt_holes_above_waterline );
                 my_form.output_right_ship_holes_below.value = parseInt( ist_ship_combat.n_dd_cnt_holes_below_waterline );
                 my_form.output_right_ship_holes_sails.value = parseInt( ist_ship_combat.n_dd_cnt_holes_sail );                
-                my_form.output_right_ship_cnt_fallen_mast.value = parseEng( ist_ship_combat.n_dd_cnt_fallen_mast );
+                my_form.output_right_ship_cnt_fallen_mast.value = parseInt( ist_ship_combat.n_dd_cnt_fallen_mast );
 
                 return;
             }
@@ -1066,7 +1132,8 @@
                 //The stats are always meter, and converted on the fly
                 console.log("Left Weapon: ", ist_weapon);
 
-                my_form.output_left_weapon_range_min.value = parseEng( convert_distance_unit( ist_weapon.n_dd_range_min, 'meter', gs_distance_unit ) )
+                my_form.output_left_weapon_range_min.value = parseEng( convert_distance_unit( ist_weapon.n_dd_range_min, 'meter', gs_distance_unit ) );
+                my_form.output_left_weapon_range_max.value = parseEng( convert_distance_unit( ist_weapon.n_dd_range_max, 'meter', gs_distance_unit ) );
                 
                 return;
             }
@@ -1078,7 +1145,8 @@
                 //The stats are always meter, and converted on the fly
                 console.log("Right Weapon: ", ist_weapon);
 
-                my_form.output_right_weapon_range_min.value = parseEng( convert_distance_unit( ist_weapon.n_dd_range_min, 'meter', gs_distance_unit ) )
+                my_form.output_right_weapon_range_min.value = parseEng( convert_distance_unit( ist_weapon.n_dd_range_min, 'meter', gs_distance_unit ) );
+                my_form.output_right_weapon_range_max.value = parseEng( convert_distance_unit( ist_weapon.n_dd_range_max, 'meter', gs_distance_unit ) );
                 
                 return;
             }
