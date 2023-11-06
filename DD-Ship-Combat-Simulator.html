@@ -484,13 +484,13 @@
             //Ship stats
             let gca_ships_transposed =
             [
-                ["s_ship_id",               "s_ship_name",              "s_ship_class",             "s_ship_manufacturer",      "n_displacement_min_t",     "n_displacement_max_t", "n_length_m",   "n_width_m",    "n_height_m",   "n_depth_m",    "n_sail_angle_max_deg",     "n_sail_surface_m2",    "n_speed_m_over_s", "n_cnt_max_mast",   "n_deck_lower", "n_crew_total", "n_crew_officiers", "n_armament",   "n_dd_max_hp_health",   "n_dd_ac_armor_class", "n_dd_max_water_level", "n_weapon_1_type",   "n_weapon_1_placement", "n_weapon_2_type",  "n_weapon_2_placement", "n_weapon_3_type",  "n_weapon_3_placement", "x_valid" ],
-                ["",                        "",                         "Dummy",                    "",                         0,                          0,                      0,              0,              0,              0,              0,                          0,                      0,                  0,                  0,              0,              0,                  0,              0,                      10,                     0,                      "",                 "",                     "",                 "",                     "",                 "",                     false,  ],
-                ["amerigo-vespucci",        "Amerigo Vespucci",         "Fully Rigged",             "Venetian Arsenal",         1230,                       4146,                   100.5,          15.6,           54,             7.4,            60,                         2635,                   7.71,               3,                  3,              394,            15,                 17,             4000,                   18,                     200,                    "cannon-63mm",      "2 RIGHT, 2 LEFT",      "cannon-76mm",      "3 RIGHT, 3 LEFT",      "cannon-127mm",     "8 RIGHT, 8 LEFT",      true,   ],
-                ["pufferfish-sloop",        "Fishing Sloop",            "Pufferfish Sloop",         "Eeland Shipyard",          15,                         30,                     15,             3,              8,              1,              40,                         40,                     5.0,                1,                  1,              4,              1,                  0,              100,                    12,                     10,                     "",                 "",                     "",                 "",                     "",                 "",                     true,   ],
-                ["circus-charlie",          "Circus Charlie",           "Pufferfish Sloop",         "Eeland Shipyard",          15,                         30,                     15,             3,              10,             1,              40,                         50,                     7.0,                1,                  1,              4,              1,                  1,              150,                    13,                     10,                     "cannon-63mm",      "1 FRONT",              "harpoon",          "1 FRONT",              "",                 "",                     true,   ],
-                ["concordia-brig",          "Concordia Brigantine",     "Concordia Brigantine",     "Riva Shipyard",            40,                         100,                    30,             4.5,            12.0,           2.0,            45,                         90,                     7.5,                2,                  1,              10,             2,                  4,              400,                    14,                     30,                     "cannon-76mm",      "2 RIGHT, 2 LEFT",      "",                 "",                     "",                 "",                     true,   ],
-                ["glass-ceiling-concordia", "Glass Ceiling",            "Concordia Brigantine",     "Riva Shipyard",            40,                         100,                    30,             4.5,            12.0,           2.0,            45,                         90,                     7.5,                2,                  1,              10,             2,                  4,              400,                    14,                     30,                     "cannon-76mm",      "2 RIGHT, 2 LEFT",      "",                 "",                     "",                 "",                     true,   ],
+                ["s_ship_id",               "s_ship_name",              "s_ship_class",             "s_ship_manufacturer",      "n_displacement_min_t",     "n_displacement_max_t", "n_length_m",   "n_width_m",    "n_height_m",   "n_depth_m",    "n_sail_angle_max_deg",     "n_sail_surface_m2",    "n_speed_m_over_s", "n_cnt_max_mast",   "n_deck_lower", "n_crew_total", "n_crew_officiers", "n_armament",   "n_dd_max_hp_health",   "n_dd_ac_armor_class", "n_dd_max_water_level",  "n_dd_special_defense_cr",  "n_weapon_1_type",   "n_weapon_1_placement", "n_weapon_2_type",  "n_weapon_2_placement", "n_weapon_3_type",  "n_weapon_3_placement", "x_valid" ],
+                ["",                        "",                         "Dummy",                    "",                         0,                          0,                      0,              0,              0,              0,              0,                          0,                      0,                  0,                  0,              0,              0,                  0,              0,                      10,                    0,                       0,                          "",                 "",                     "",                 "",                     "",                 "",                     false,  ],
+                ["amerigo-vespucci",        "Amerigo Vespucci",         "Fully Rigged",             "Venetian Arsenal",         1230,                       4146,                   100.5,          15.6,           54,             7.4,            60,                         2635,                   7.71,               3,                  3,              394,            15,                 17,             4000,                   18,                    200,                     15,                         "cannon-63mm",      "2 RIGHT, 2 LEFT",      "cannon-76mm",      "3 RIGHT, 3 LEFT",      "cannon-127mm",     "8 RIGHT, 8 LEFT",      true,   ],
+                ["pufferfish-sloop",        "Fishing Sloop",            "Pufferfish Sloop",         "Eeland Shipyard",          15,                         30,                     15,             3,              8,              1,              40,                         40,                     5.0,                1,                  1,              4,              1,                  0,              100,                    12,                    10,                      10,                         "",                 "",                     "",                 "",                     "",                 "",                     true,   ],
+                ["circus-charlie",          "Circus Charlie",           "Pufferfish Sloop",         "Eeland Shipyard",          15,                         30,                     15,             3,              10,             1,              40,                         50,                     7.0,                1,                  1,              4,              1,                  1,              150,                    13,                    10,                      10,                         "cannon-63mm",      "1 FRONT",              "harpoon",          "1 FRONT",              "",                 "",                     true,   ],
+                ["concordia-brig",          "Concordia Brigantine",     "Concordia Brigantine",     "Riva Shipyard",            40,                         100,                    30,             4.5,            12.0,           2.0,            45,                         90,                     7.5,                2,                  1,              10,             2,                  4,              400,                    14,                    30,                      12,                         "cannon-76mm",      "2 RIGHT, 2 LEFT",      "",                 "",                     "",                 "",                     true,   ],
+                ["glass-ceiling-concordia", "Glass Ceiling",            "Concordia Brigantine",     "Riva Shipyard",            40,                         100,                    30,             4.5,            12.0,           2.0,            45,                         90,                     7.5,                2,                  1,              10,             2,                  4,              400,                    14,                    30,                      12,                         "cannon-76mm",      "2 RIGHT, 2 LEFT",      "",                 "",                     "",                 "",                     true,   ],
             ];      
             //Ship load
             function load_ship_transpose( is_ship )
@@ -1286,7 +1286,10 @@
                     {
                         if (st_damage_report.x_crit == false)
                         {
-                            st_damage_report.s_side_effect = "hull-breach-above-waterline";
+                            if (roll_challenge(ist_ship_defending.n_dd_special_defense_cr, "throw-regular"))
+                            {
+                                st_damage_report.s_side_effect = "hull-breach-above-waterline";
+                            }
                         }
                         else
                         {
@@ -1300,7 +1303,10 @@
                     {
                         if (st_damage_report.x_crit == false)
                         {
-                            st_damage_report.s_side_effect = "crew-hit";
+                            if (roll_challenge(ist_ship_defending.n_dd_special_defense_cr, "throw-regular"))
+                            {
+                                st_damage_report.s_side_effect = "crew-hit";
+                            }
                         }
                         else
                         {
@@ -1314,7 +1320,10 @@
                     {
                         if (st_damage_report.x_crit == false)
                         {
-                            st_damage_report.s_side_effect = "sail-hole";
+                            if (roll_challenge(ist_ship_defending.n_dd_special_defense_cr, "throw-regular"))
+                            {
+                                st_damage_report.s_side_effect = "sail-hole";
+                            }
                         }
                         else
                         {
@@ -1328,7 +1337,10 @@
                     {
                         if (st_damage_report.x_crit == false)
                         {
-                            st_damage_report.s_side_effect = "weapon-disabled";
+                            if (roll_challenge(ist_ship_defending.n_dd_special_defense_cr, "throw-regular"))
+                            {
+                                st_damage_report.s_side_effect = "weapon-disabled";
+                            }
                         }
                         else
                         {
@@ -1401,6 +1413,36 @@
                 return ist_ship_combat;
             }
 
+            function simulate_water_intake( ist_ship_combat )
+            {
+                //No fires
+                if ((ist_ship_combat.n_dd_cnt_holes_below_waterline + ist_ship_combat.n_dd_cnt_holes_above_waterline) <= 0)
+                {
+                    //Do nothing
+                    return ist_ship_combat;
+                }
+
+                //For each fire
+                let n_cnt_water_intake = 0;
+                //For each hole above waterline
+                for (let n_cnt = 0; n_cnt < ist_ship_combat.n_dd_cnt_holes_above_waterline; n_cnt++)
+                {
+                    if (roll_challenge(10, "throw-regular"))
+                    {
+                        n_cnt_water_intake += 1;
+                    }
+                }
+                //For each hole below waterline
+                n_cnt_water_intake += ist_ship_combat.n_dd_cnt_holes_below_waterline;
+
+                //Accumulate results
+                ist_ship_combat.n_dd_water_level += n_cnt_water_intake;
+                console.log("WATER INTAKE: ", n_cnt_water_intake);
+                new_event("WATER INTAKE: ", n_cnt_water_intake );
+
+                return ist_ship_combat;
+            }
+
             //  SIMULATIONS:
             //fire simulation
             //each hull hole 
@@ -1409,9 +1451,11 @@
                 //Simulate fire damage and fire spread
                 new_event("LEFT SHIP SIMULATION");
                 gst_left_ship_combat = simulate_damage_fire( gst_left_ship_combat );
+                gst_left_ship_combat = simulate_water_intake( gst_left_ship_combat );
 
                 new_event("RIGHT SHIP SIMULATION");
                 gst_right_ship_combat = simulate_damage_fire( gst_right_ship_combat );
+                gst_right_ship_combat = simulate_water_intake( gst_right_ship_combat );
 
                 update_output_left_ship( gst_left_ship, gst_left_ship_combat, gs_distance_unit );
                 update_output_right_ship( gst_right_ship, gst_right_ship_combat, gs_distance_unit );
@@ -1607,7 +1651,7 @@
                             }
                         }
                         //If weapon has fire damage, roll chance to start a fire
-                        if( roll_challenge( 10, "throw-regular") )
+                        if ((gst_left_weapon.n_dd_damage_type == "fire") && (roll_challenge(gst_right_ship.n_dd_special_defense_cr , "throw-regular")) )
                         {
                             //Start a fire on the ship
                             gst_right_ship_combat.n_dd_cnt_fire_on_deck += 1;
@@ -1677,6 +1721,12 @@
                             {
                                 console.log("ERR: unhandled side effect: ", st_damage_report.s_side_effect );
                             }
+                        }
+                        //If weapon has fire damage, roll chance to start a fire
+                        if ((gst_right_weapon.n_dd_damage_type == "fire") && (roll_challenge(gst_left_ship.n_dd_special_defense_cr , "throw-regular")) )
+                        {
+                            //Start a fire on the ship
+                            gst_left_ship_combat.n_dd_cnt_fire_on_deck += 1;
                         }
                         update_output_left_ship( gst_left_ship, gst_left_ship_combat, gs_distance_unit );
                     }   //if HIT
