@@ -543,66 +543,40 @@
             
             //--------------------------------------------------------------------------------------
             //  WEAPONS
-            //--------------------------------------------------------------------------------------
-
-            //Ship stats
-            gca_weapons =
+            //-------------------------------------------------------------------------------------- 
+            
+            let gca_weapons_transposed =
             [
-                //Name of the weapon
-                ["s_weapon_name",                   "",         "cannon-63mm",  "cannon-63mm-chain",    "cannon-76mm"],
-                //Weight of the weapon and ammunition in Kg
-                ["n_weight_weapon",                 0,          275,            275,                    680,                    ],
-                ["n_weight_ammunition",             0,          0.9,            1.9,                    2.7,                  ],
-                //Gold Cost of weapon and ammunition                                        
-                ["n_gold_weapon",                   0,          100,            100,                    200,                  ],
-                ["n_gold_ammunition",               0,          0.5,            1.5,                    0.75,                  ],
-                //Angle that weapon can be rotated left/right in degrees                                        
-                ["n_angle_aim_horizontal",          0,          20,             20,                     25,                  ],
-                    //D&D Stats of the weapon                                       
-                //Minimum range for firing the weapon in meters                                     
-                ["n_dd_range_min",                  0,          6,              6,                      6,                     ],
-                ["n_dd_range_max",                  0,          250,            150,                    500,                    ],
-                //Penality to attack roll                                       
-                ["n_dd_attack_max_range_penality",  0,          -10,            -10,                    -10,                  ],
-                ["n_dd_attack_hull_penalty",        0,          -0,             -2,                     0,                   ],
-                ["n_dd_attack_sail_penalty",        0,          -2,             0,                      -2,                   ],
-                ["n_dd_attack_weapon_penalty",      0,          -3,             -4,                     -3,                   ],
-                ["n_dd_attack_deck_penalty",        0,          -4,             -3,                     -4,                   ],
-                //Attack type                                       
-                ["n_dd_damage_type",                "",         "blunt",        "slash",                "blunt"                 ],
-                //Die roll of the weapon damage if hit                                      
-                ["n_dd_damage_die_faces",           0,          8,              8,                      8,                    ],
-                ["n_dd_damage_die_num_rolls",       0,          3,              2,                      4,                    ],
-                //Area of the weapon in meter                                       
-                ["n_dd_damage_aoe",                 0,          0,              1.5,                    1.5,                  ],
-                ["x_valid",                         false,      true,           true,                   true,                  ],
-            ];                  
+                ["s_weapon_name",           "n_weight_weapon",  "n_weight_ammunition",  "n_gold_weapon",    "n_gold_ammunition",    "n_angle_aim_horizontal",   "n_dd_range_min",   "n_dd_range_max",   "n_dd_attack_max_range_penality",   "n_dd_attack_hull_penalty",     "n_dd_attack_sail_penalty",     "n_dd_attack_weapon_penalty",   "n_dd_attack_deck_penalty",     "n_dd_damage_type", "n_dd_damage_die_faces",    "n_dd_damage_die_num_rolls",    "n_dd_damage_aoe",  "x_valid"   ],
+                ["",                        0,                  0,                      0,                  0,                      0,                          0,                  0,                  0,                                  0,                              0,                              0,                              0,                              "",                 0,                          0,                              0,                  false   ],
+                ["cannon-63mm",             275,                0.9,                    100,                0.5,                    20,                         6,                  250,                -10,                                -0,                             -2,                             -3,                             -4,                             "blunt",            8,                          3,                              0,                  true    ],
+                ["cannon-63mm-chain",       275,                1.9,                    100,                1.5,                    20,                         6,                  150,                -10,                                -0,                             0,                              -4,                             -4,                             "slash",            6,                          2,                              0,                  true    ],
+                ["cannon-76mm",             680,                2.7,                    200,                0.75,                   25,                         6,                  500,                -10,                                -0,                             0,                              -4,                             -4,                             "blunt",            8,                          4,                              0,                  true    ],
+            ];
+
             //Given a weapon name, load the weapon with all its stats from the weapon matrix
-            function load_weapon( is_weapon )
+            function load_weapon_transpose( is_weapon )
             {
-                //search the weapon in the matrix
-                let n_weapon_index = gca_weapons[0].indexOf(is_weapon);
-                //Allocate return structure
+                let st_weapon_data = gca_weapons_transposed.find(row => row[0] === is_weapon);
+                console.log("Load Weapon: ", is_weapon, st_weapon_data );
+                if (!st_weapon_data)
+                {
+                    return null;
+                }
+
                 let st_weapon = {};
-                if (n_weapon_index === -1)
+                for (let i = 0; i < gca_weapons_transposed[0].length; i++)
                 {
-                    console.log("ERR: weapon not found in the matrix: ", is_weapon);
-                    //Use the N.A. weapon
-                    n_weapon_index = 1;
+                    let s_field = gca_weapons_transposed[0][i];
+                    st_weapon[s_field] = st_weapon_data[i];
                 }
-                //Copy over the stats from the correct weapon
-                for (let n_cnt = 0; n_cnt < gca_weapons.length; n_cnt++)
-                {
-                    let s_field = gca_weapons[n_cnt][0];
-                    let n_value = gca_weapons[n_cnt][n_weapon_index];
-                    st_weapon[s_field] = n_value;
-                }
-                //console.log("Load Weapon: ", st_weapon );
+
                 return st_weapon;
             }
+
             //Initialize global weapons
-            let gst_left_weapon = load_weapon("");
-            let gst_right_weapon = load_weapon("");
+            let gst_left_weapon = load_weapon_transpose("");
+            let gst_right_weapon = load_weapon_transpose("");
             //Holds combat status vars of the ship. One for each ship.
             let gst_ship_combat = 
             {
@@ -1540,7 +1514,7 @@
                 function()
                 {
                     //Load the data of the ship
-                    st_weapon = load_weapon(my_form.choice_left_weapon.value);
+                    st_weapon = load_weapon_transpose(my_form.choice_left_weapon.value);
                     //Show the ship data
                     update_output_left_weapon( st_weapon );
 
@@ -1551,9 +1525,11 @@
                 function()
                 {
                     //Load the data of the ship
-                    st_weapon = load_weapon(my_form.choice_right_weapon.value);
+                    st_weapon = load_weapon_transpose(my_form.choice_right_weapon.value);
                     //Show the ship data
                     update_output_right_weapon( st_weapon );
+
+                    get_distance_left_ship_center_to_center_right_ship_center();
                 }
 
                 //Fire left weapon against Right Ship
