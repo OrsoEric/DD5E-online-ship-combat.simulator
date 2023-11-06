@@ -227,6 +227,7 @@
                         <option value=""></option>
                         <option value="cannon-63mm">Cannon 63[mm] - Cannonball 0.9[Kg]</option>
                         <option value="cannon-63mm-chain">Cannon 63[mm] - Chainlink 1.9[Kg]</option>
+                        <option value="cannon-63mm-fire">Cannon 63[mm] - Firebomb 1.5[Kg]</option>
                         <option value="cannon-76mm">Cannon 76[mm] - Cannonball 2.7[Kg]</option>
                     </select>
                 </p>
@@ -550,8 +551,10 @@
                 ["s_weapon_name",           "n_weight_weapon",  "n_weight_ammunition",  "n_gold_weapon",    "n_gold_ammunition",    "n_angle_aim_horizontal",   "n_dd_range_min",   "n_dd_range_max",   "n_dd_attack_max_range_penality",   "n_dd_attack_hull_penalty",     "n_dd_attack_sail_penalty",     "n_dd_attack_weapon_penalty",   "n_dd_attack_deck_penalty",     "n_dd_damage_type", "n_dd_damage_die_faces",    "n_dd_damage_die_num_rolls",    "n_dd_damage_aoe",  "x_valid"   ],
                 ["",                        0,                  0,                      0,                  0,                      0,                          0,                  0,                  0,                                  0,                              0,                              0,                              0,                              "",                 0,                          0,                              0,                  false   ],
                 ["cannon-63mm",             275,                0.9,                    100,                0.5,                    20,                         6,                  250,                -10,                                -0,                             -2,                             -3,                             -4,                             "blunt",            8,                          3,                              0,                  true    ],
-                ["cannon-63mm-chain",       275,                1.9,                    100,                1.5,                    20,                         6,                  150,                -10,                                -0,                             0,                              -4,                             -4,                             "slash",            6,                          2,                              0,                  true    ],
+                ["cannon-63mm-chain",       275,                1.9,                    100,                1.5,                    20,                         6,                  150,                -10,                                -2,                             0,                              -4,                             -4,                             "slash",            6,                          2,                              0,                  true    ],
+                ["cannon-63mm-fire",        275,                1.5,                    100,                3.5,                    20,                         6,                  100,                -10,                                -3,                             -3,                             -4,                             -2,                             "fire",             6,                          2,                              3.0,                true    ],
                 ["cannon-76mm",             680,                2.7,                    200,                0.75,                   25,                         6,                  500,                -10,                                -0,                             0,                              -4,                             -4,                             "blunt",            8,                          4,                              0,                  true    ],
+                ["cannon-127mm",            680,                2.7,                    200,                0.75,                   25,                         6,                  500,                -10,                                -0,                             0,                              -4,                             -4,                             "blunt",            8,                          4,                              0,                  true    ],
             ];
 
             //Given a weapon name, load the weapon with all its stats from the weapon matrix
@@ -678,6 +681,15 @@
                     }
                 }
                 return n_roll;
+            }
+
+            //Roll a challenge of a given CR
+            function roll_challenge( in_dd_cr_challenge_rating, is_advantage )
+            {
+                //Roll a D20
+                let n_roll = roll_die_advantage( 20, is_advantage );
+                //check against the CR
+                return (n_roll >= in_dd_cr_challenge_rating);
             }
 
             function parseEng( num )
@@ -1329,6 +1341,7 @@
                         console.log("ERR: invalid target: ", st_attack_modifiers.s_target);
                     }
                 }
+
                 //Return the damage report, it must be applied to the appropriate ship
                 console.log("Damage report: ", st_damage_report );
                 return st_damage_report;
@@ -1428,7 +1441,6 @@
                 //
                 st_move = simulate_move_ship( st_test_ship, st_test_navigation, st_test_wind )
                 //The ship should move at exactly the maximum speed for 6 seconds in meter to the north
-
             }
 
             //--------------------------------------------------------------------------------------
@@ -1531,7 +1543,6 @@
 
                     get_distance_left_ship_center_to_center_right_ship_center();
                 }
-
                 //Fire left weapon against Right Ship
                 my_form.btn_left_weapon_fire.onclick = 
                 function()
@@ -1595,6 +1606,13 @@
                                 console.log("ERR: unhandled side effect: ", st_damage_report.s_side_effect );
                             }
                         }
+                        //If weapon has fire damage, roll chance to start a fire
+                        if( roll_challenge( 10, "throw-regular") )
+                        {
+                            //Start a fire on the ship
+                            gst_right_ship_combat.n_dd_cnt_fire_on_deck += 1;
+                        }
+
                         update_output_right_ship( gst_right_ship, gst_right_ship_combat, gs_distance_unit );
                     }   //if HIT
                     return;
@@ -1670,8 +1688,6 @@
                 {
                     //Damage Simulation
                     simulate_damage();
-
-
 
                     console.log("Button onclick: ", my_form.btn_next_turn.value)
                     new_event("previous turn: ", gn_turn_cnt, " -> Current Turn: ", gn_turn_cnt +1)
